@@ -1,1 +1,17 @@
+# ESPHome キャッシュ／ビルド成果物
+.esphome/build/
+.esphome/packages/
 
+# センシティブな情報
+secrets.yaml
+*.secret.yaml
+*.env
+
+# Home Assistant アドオン設定ディレクトリ（ローカルマウント用）
+config/
+
+# OS／エディタ固有のファイル
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

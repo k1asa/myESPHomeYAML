@@ -305,7 +305,7 @@ interval:
       - display.page.show_next: main_display
 
 # Sensorの共通テンプレート定義
-sensor_common: &sensor_common
+.sensor_common: &sensor_common
   platform: homeassistant
   entity_id: sensor.daily_forecast_data
   attribute: forecast_data

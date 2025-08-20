@@ -36,11 +36,14 @@ light:
     platform: monochromatic
     output: backlight_pwm
     name: Display Backlight
+    restore_mode: ALWAYS_ON
   - platform: rgb
+    name: RGB
     id: led
     red: led_red
     green: led_green
     blue: led_blue
+    restore_mode: ALWAYS_OFF
 
 ###各GPIOの提議
 output:

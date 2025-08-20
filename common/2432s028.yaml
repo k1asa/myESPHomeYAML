@@ -16,8 +16,16 @@ web_server:
 
 ###タッチスクリーンとディスプレイのSPIピン設定
 spi:
-  - id: tft   clk_pin: GPIO14  mosi_pin: GPIO13  miso_pin: GPIO12
-  - id: touch clk_pin: GPIO25  mosi_pin: GPIO32  miso_pin: GPIO39
+  - id: tft
+    clk_pin: GPIO14
+    mosi_pin: GPIO13
+    miso_pin:
+      number: 12
+      ignore_strapping_warning: true
+  - id: touch
+    clk_pin: GPIO25
+    mosi_pin: GPIO32
+    miso_pin: GPIO39
 
 ###ディスプレイ各設定
 ###縦置き横置きなどはrotationを変更

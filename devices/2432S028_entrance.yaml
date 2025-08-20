@@ -290,6 +290,7 @@ text_sensor:
 ###Touch Screens
 touchscreen:
   - id: main_touch
+    platform: xpt2046
     on_touch:
       lambda: |-
         id(touch_x_val) = touch.x;

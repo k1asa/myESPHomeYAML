@@ -13,3 +13,67 @@ api:
 ota:
 web_server:
     port: 80
+
+###タッチスクリーンとディスプレイのSPIピン設定
+spi:
+  - id: tft   clk_pin: GPIO14  mosi_pin: GPIO13  miso_pin: GPIO12
+  - id: touch clk_pin: GPIO25  mosi_pin: GPIO32  miso_pin: GPIO39
+
+###ディスプレイ各設定
+###縦置き横置きなどはrotationを変更
+display:
+  - platform: ili9xxx
+    id: main_display
+    model: ILI9341
+    update_interval: 50ms
+    color_palette: 8BIT
+    spi_id: tft
+    color_order: rgb
+    invert_colors: false
+    cs_pin:
+      number: 15
+      ignore_strapping_warning: true
+    dc_pin:
+      number:  2
+      ignore_strapping_warning: true
+    rotation: 0°
+    dimensions:
+      height: 240
+      width: 320
+
+###タッチスクリーン設定
+touchscreen:
+  - platform: xpt2046
+    spi_id: touch
+    cs_pin: GPIO33
+    interrupt_pin: GPIO36
+    update_interval: 50ms
+    threshold: 600
+    calibration:
+      x_min: 280
+      x_max: 3860
+      y_min: 340
+      y_max: 3860
+    transform:
+      swap_xy: true
+      mirror_x: true
+      mirror_y: true
+
+###裏面LEDとLEDバックライト
+light:
+  - id: backlight
+    platform: monochromatic
+    output: backlight_pwm
+    name: Display Backlight
+  - platform: rgb
+    id: led
+    red: led_red
+    green: led_green
+    blue: led_blue
+
+###各GPIOの提議
+output:
+  - id: backlight_pwm platform: ledc pin: GPIO21
+  - id: led_red       platform: ledc pin: GPIO4  inverted: true
+  - id: led_green     platform: ledc pin: GPIO16 inverted: true
+  - id: led_blue      platform: ledc pin: GPIO17 inverted: true

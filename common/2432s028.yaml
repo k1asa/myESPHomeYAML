@@ -51,7 +51,8 @@ spi:
 
 ###タッチスクリーン設定
 touchscreen:
-  - platform: xpt2046
+  - &main_display_anchor
+    platform: xpt2046
     id: main_touch
     spi_id: touch
     cs_pin: GPIO33

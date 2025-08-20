@@ -29,9 +29,7 @@ spi:
 
 ###ディスプレイ各設定
 ###縦置き横置きなどはrotationを変更
-display: 
-  - &main_display_anchor
-    platform: ili9xxx
+.display: &main_display_anchor
     id: main_display
     model: ILI9341
     update_interval: 50ms

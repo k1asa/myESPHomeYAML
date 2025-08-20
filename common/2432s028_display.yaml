@@ -1,0 +1,17 @@
+platform: ili9xxx
+id: main_display
+model: ILI9341
+update_interval: 50ms
+color_palette: 8BIT
+spi_id: tft
+color_order: rgb
+invert_colors: false
+cs_pin:
+  number: 15
+  ignore_strapping_warning: true
+dc_pin:
+  number:  2
+  ignore_strapping_warning: true
+dimensions:
+  height: 240
+  width: 320

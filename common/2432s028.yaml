@@ -81,7 +81,18 @@ light:
 
 ###各GPIOの提議
 output:
-  - id: backlight_pwm platform: ledc pin: GPIO21
-  - id: led_red       platform: ledc pin: GPIO4  inverted: true
-  - id: led_green     platform: ledc pin: GPIO16 inverted: true
-  - id: led_blue      platform: ledc pin: GPIO17 inverted: true
+  - id: backlight_pwm
+    platform: ledc
+    pin: GPIO21
+  - platform: ledc
+    pin: GPIO4
+    id: led_red
+    inverted: true
+  - platform: ledc
+    pin: GPIO16
+    id: led_green
+    inverted: true
+  - platform: ledc
+    pin: GPIO17
+    id: led_blue
+    inverted: true

@@ -11,6 +11,9 @@ logger:
 api:
 # Allow Over-The-Air updates
 ota:
+  - platform: esphome
+    password: !secret ota_password
+
 web_server:
     port: 80
 

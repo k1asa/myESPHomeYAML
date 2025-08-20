@@ -12,16 +12,6 @@ esphome:
 # 共通WiFi設定
 <<: !include ../common/wifi.yaml
 
-#esp32:
-#  framework:
-#    type: arduino
-
-
-# Allow Over-The-Air updates
-#ota:
-#- platform: esphome
-###############
-
 
 #####Custom#####
 <<: !include ../common/2432s028.yaml
@@ -320,46 +310,299 @@ sensor_common: &sensor_common
   entity_id: sensor.daily_forecast_data
   attribute: forecast_data
 
-# Jinja 定義部（インデントしない）
-{% set days = range(0, 8) %}
-{% set sensor_defs = [
-    {'key':'precip_prob', 'unit':'%',  'common':'sensor_common'},
-    {'key':'temp_max',    'unit':'°C', 'common':'sensor_common'},
-    {'key':'temp_min',    'unit':'°C', 'common':'sensor_common'},
-    {'key':'humidity',    'unit':'%', 'common':'sensor_common'}
-] %}
-{% set text_defs = [
-    {'key':'condition',    'common':'sensor_common'},
-    {'key':'condition_jp', 'common':'sensor_common'}
-] %}
-
-
 ###Sensors
 sensor:
-# 数値センサーの自動生成
-{% for d in days %}
-{% for s in sensor_defs %}
-  - <<: *{{ s.common }}
+  # day0
+  - <<: *sensor_common
     filters:
       - json:
-          path: "$[{{ d }}].{{ s.key }}"
-    unit_of_measurement: "{{ s.unit }}"
-    id: forecast_day{{ d }}_{{ s.key }}
-{% endfor %}
-{% endfor %}
+          path: "$[0].precip_prob"
+    unit_of_measurement: "%"
+    id: forecast_day0_precip_prob
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[0].temp_max"
+    unit_of_measurement: "°C"
+    id: forecast_day0_temp_max
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[0].temp_min"
+    unit_of_measurement: "°C"
+    id: forecast_day0_temp_min
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[0].humidity"
+    unit_of_measurement: "%"
+    id: forecast_day0_humidity
+  # day1
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[1].precip_prob"
+    unit_of_measurement: "%"
+    id: forecast_day1_precip_prob
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[1].temp_max"
+    unit_of_measurement: "°C"
+    id: forecast_day1_temp_max
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[1].temp_min"
+    unit_of_measurement: "°C"
+    id: forecast_day1_temp_min
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[1].humidity"
+    unit_of_measurement: "%"
+    id: forecast_day1_humidity
+  # day2
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[2].precip_prob"
+    unit_of_measurement: "%"
+    id: forecast_day2_precip_prob
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[2].temp_max"
+    unit_of_measurement: "°C"
+    id: forecast_day2_temp_max
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[2].temp_min"
+    unit_of_measurement: "°C"
+    id: forecast_day2_temp_min
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[2].humidity"
+    unit_of_measurement: "%"
+    id: forecast_day2_humidity
+  # day3
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[3].precip_prob"
+    unit_of_measurement: "%"
+    id: forecast_day3_precip_prob
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[3].temp_max"
+    unit_of_measurement: "°C"
+    id: forecast_day3_temp_max
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[3].temp_min"
+    unit_of_measurement: "°C"
+    id: forecast_day3_temp_min
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[3].humidity"
+    unit_of_measurement: "%"
+    id: forecast_day3_humidity
+  # day4
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[4].precip_prob"
+    unit_of_measurement: "%"
+    id: forecast_day4_precip_prob
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[4].temp_max"
+    unit_of_measurement: "°C"
+    id: forecast_day4_temp_max
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[4].temp_min"
+    unit_of_measurement: "°C"
+    id: forecast_day4_temp_min
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[4].humidity"
+    unit_of_measurement: "%"
+    id: forecast_day4_humidity
+  # day5
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[5].precip_prob"
+    unit_of_measurement: "%"
+    id: forecast_day5_precip_prob
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[5].temp_max"
+    unit_of_measurement: "°C"
+    id: forecast_day5_temp_max
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[5].temp_min"
+    unit_of_measurement: "°C"
+    id: forecast_day5_temp_min
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[5].humidity"
+    unit_of_measurement: "%"
+    id: forecast_day5_humidity
+  # day6
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[6].precip_prob"
+    unit_of_measurement: "%"
+    id: forecast_day6_precip_prob
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[6].temp_max"
+    unit_of_measurement: "°C"
+    id: forecast_day6_temp_max
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[6].temp_min"
+    unit_of_measurement: "°C"
+    id: forecast_day6_temp_min
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[6].humidity"
+    unit_of_measurement: "%"
+    id: forecast_day6_humidity
+  # day7
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[7].precip_prob"
+    unit_of_measurement: "%"
+    id: forecast_day7_precip_prob
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[7].temp_max"
+    unit_of_measurement: "°C"
+    id: forecast_day7_temp_max
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[7].temp_min"
+    unit_of_measurement: "°C"
+    id: forecast_day7_temp_min
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[7].humidity"
+    unit_of_measurement: "%"
+    id: forecast_day7_humidity
 
 ###Text Sensor
 text_sensor:
-# テキストセンサーの自動生成
-{% for d in days %}
-{% for t in text_defs %}
-  - <<: *{{ t.common }}
+  # day0
+  - <<: *sensor_common
     filters:
       - json:
-          path: "$[{{ d }}].{{ t.key }}"
-    id: forecast_day{{ d }}_{{ t.key }}
-{% endfor %}
-{% endfor %}
+          path: "$[0].condition"
+    id: forecast_day0_condition
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[0].condition_jp"
+    id: forecast_day0_condition_jp
+  # day1
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[1].condition"
+    id: forecast_day1_condition
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[1].condition_jp"
+    id: forecast_day1_condition_jp
+  # day2
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[2].condition"
+    id: forecast_day2_condition
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[2].condition_jp"
+    id: forecast_day2_condition_jp
+  # day3
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[3].condition"
+    id: forecast_day3_condition
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[3].condition_jp"
+    id: forecast_day3_condition_jp
+  # day4
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[4].condition"
+    id: forecast_day4_condition
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[4].condition_jp"
+    id: forecast_day4_condition_jp
+  # day5
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[5].condition"
+    id: forecast_day5_condition
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[5].condition_jp"
+    id: forecast_day5_condition_jp
+  # day6
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[6].condition"
+    id: forecast_day6_condition
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[6].condition_jp"
+    id: forecast_day6_condition_jp
+  # day7
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[7].condition"
+    id: forecast_day7_condition
+  - <<: *sensor_common
+    filters:
+      - json:
+          path: "$[7].condition_jp"
+    id: forecast_day7_condition_jp
 
 ###Touch Screens
 touchscreen:

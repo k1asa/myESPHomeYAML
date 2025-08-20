@@ -53,7 +53,31 @@ color:
 ###縦置き横置きなどはrotationを変更
 display:
   - <<: !include ../common/2432s028_display.yaml
-    rotation: 0°
+    rotation: 0
+    lambda_globals:
+      - |-
+        auto draw_weather_icon = [&](auto &it, int x, int y, text_sensor::TextSensor *condition_sensor) {
+          // センサーがまだ値を受信していない場合に備える
+          if (!condition_sensor->has_state()) {
+            it.print(x + 40, y + 40, id(roboto20), id(white), TextAlign::CENTER, "?");
+            return;
+          }
+          std::string condition = condition_sensor->state;
+          if (condition == "sunny") { it.image(x, y, id(weather_sunny)); }
+          else if (condition == "clear-night") { it.image(x, y, id(weather_clear_night)); }
+          else if (condition == "cloudy") { it.image(x, y, id(weather_cloudy)); }
+          else if (condition == "partlycloudy") { it.image(x, y, id(weather_partlycloudy)); }
+          else if (condition == "rainy") { it.image(x, y, id(weather_rainy)); }
+          else if (condition == "pouring") { it.image(x, y, id(weather_pouring)); }
+          else if (condition == "lightning-rainy") { it.image(x, y, id(weather_lightning_rainy)); }
+          else if (condition == "snowy") { it.image(x, y, id(weather_snowy)); }
+          else if (condition == "snowy-rainy") { it.image(x, y, id(weather_snowy_rainy)); }
+          else if (condition == "windy" || condition == "windy-variant") { it.image(x, y, id(weather_windy_variant)); }
+          else if (condition == "fog") { it.image(x, y, id(weather_fog)); }
+          else if (condition == "hail") { it.image(x, y, id(weather_hail)); }
+          else if (condition == "lightning") { it.image(x, y, id(weather_lightning)); }
+          else { it.image(x, y, id(weather_cloudy)); }
+        };
     pages:
       - id: page1
         lambda: |-
@@ -65,35 +89,13 @@ display:
           it.filled_circle(id(touch_x_val), id(touch_y_val), 10, id(yellow));
       - id: page2
         lambda: |-
-          auto draw_weather_icon = [&](int x, int y, text_sensor::TextSensor *condition_sensor) {
-            // センサーがまだ値を受信していない場合に備える
-            if (!condition_sensor->has_state()) {
-              it.print(x + 40, y + 40, id(roboto20), id(white), TextAlign::CENTER, "?");
-              return;
-            }
-            std::string condition = condition_sensor->state;
-            if (condition == "sunny") { it.image(x, y, id(weather_sunny)); }
-            else if (condition == "clear-night") { it.image(x, y, id(weather_clear_night)); }
-            else if (condition == "cloudy") { it.image(x, y, id(weather_cloudy)); }
-            else if (condition == "partlycloudy") { it.image(x, y, id(weather_partlycloudy)); }
-            else if (condition == "rainy") { it.image(x, y, id(weather_rainy)); }
-            else if (condition == "pouring") { it.image(x, y, id(weather_pouring)); }
-            else if (condition == "lightning-rainy") { it.image(x, y, id(weather_lightning_rainy)); }
-            else if (condition == "snowy") { it.image(x, y, id(weather_snowy)); }
-            else if (condition == "snowy-rainy") { it.image(x, y, id(weather_snowy_rainy)); }
-            else if (condition == "windy" || condition == "windy-variant") { it.image(x, y, id(weather_windy_variant)); }
-            else if (condition == "fog") { it.image(x, y, id(weather_fog)); }
-            else if (condition == "hail") { it.image(x, y, id(weather_hail)); }
-            else if (condition == "lightning") { it.image(x, y, id(weather_lightning)); }
-            else { it.image(x, y, id(weather_cloudy)); }
-          };
 
           // 画面中央に区切り線を描画
           it.line(160, 20, 160, 220, id(white));
 
           // --- 今日の天気 (画面左側) ---
           it.print(80, 15, id(roboto16), id(white), TextAlign::TOP_CENTER, "Today");
-          draw_weather_icon(40, 40, id(forecast_day0_condition));
+          draw_weather_icon(it, 40, 40, id(forecast_day0_condition));
           if (id(forecast_day0_condition_jp).has_state()) {
             it.print(80, 120, id(roboto16), id(white), TextAlign::TOP_CENTER, id(forecast_day0_condition_jp).state.c_str());
           }
@@ -102,7 +104,7 @@ display:
 
           // --- 明日の天気 (画面右側) ---
           it.print(240, 15, id(roboto16), id(white), TextAlign::TOP_CENTER, "Next");
-          draw_weather_icon(200, 40, id(forecast_day1_condition));
+          draw_weather_icon(it, 200, 40, id(forecast_day1_condition));
           if (id(forecast_day1_condition_jp).has_state()) {
             it.print(240, 120, id(roboto16), id(white), TextAlign::TOP_CENTER, id(forecast_day1_condition_jp).state.c_str());
           }
@@ -126,14 +128,14 @@ display:
             int center_x = col * col_w + col_w / 2;           // 各列中央
 
             // 1) 天気アイコン
-            // draw_weather_icon(x, y, pointer to text_sensor)
+            // draw_weather_icon(it, x, y, pointer to text_sensor)
             switch (idx) {
-              case 2: draw_weather_icon(center_x - 16, icon_y, id(forecast_day2_condition)); break;
-              case 3: draw_weather_icon(center_x - 16, icon_y, id(forecast_day3_condition)); break;
-              case 4: draw_weather_icon(center_x - 16, icon_y, id(forecast_day4_condition)); break;
-              case 5: draw_weather_icon(center_x - 16, icon_y, id(forecast_day5_condition)); break;
-              case 6: draw_weather_icon(center_x - 16, icon_y, id(forecast_day6_condition)); break;
-              case 7: draw_weather_icon(center_x - 16, icon_y, id(forecast_day7_condition)); break;
+              case 2: draw_weather_icon(it, center_x - 16, icon_y, id(forecast_day2_condition)); break;
+              case 3: draw_weather_icon(it, center_x - 16, icon_y, id(forecast_day3_condition)); break;
+              case 4: draw_weather_icon(it, center_x - 16, icon_y, id(forecast_day4_condition)); break;
+              case 5: draw_weather_icon(it, center_x - 16, icon_y, id(forecast_day5_condition)); break;
+              case 6: draw_weather_icon(it, center_x - 16, icon_y, id(forecast_day6_condition)); break;
+              case 7: draw_weather_icon(it, center_x - 16, icon_y, id(forecast_day7_condition)); break;
             }
 
             // 2) 最高/最低気温
@@ -319,7 +321,7 @@ sensor_common: &sensor_common
   attribute: forecast_data
 
 # Jinja 定義部（インデントしない）
-{% set days = range(0, 7) %}
+{% set days = range(0, 8) %}
 {% set sensor_defs = [
     {'key':'precip_prob', 'unit':'%',  'common':'sensor_common'},
     {'key':'temp_max',    'unit':'°C', 'common':'sensor_common'},

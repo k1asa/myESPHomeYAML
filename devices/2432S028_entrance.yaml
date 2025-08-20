@@ -108,6 +108,74 @@ display:
           }
           it.printf(240, 150, id(roboto20), id(white), TextAlign::TOP_CENTER, "%.0f / %.0f ℃", id(forecast_day1_temp_max).state, id(forecast_day1_temp_min).state);
           it.printf(240, 185, id(roboto16), id(white), TextAlign::TOP_CENTER, "降水確率%.0f%%", id(forecast_day1_precip_prob).state);
+      - id: page3
+        lambda: |-
+          // 項目数と画面幅
+          const int count = 6;
+          const int screen_w = it.get_width();   // 320
+          const int screen_h = it.get_height();  // 240
+          const int col_w = screen_w / count;    // 320/6 ≒ 53px
+
+          // 共通 Y 座標
+          const int icon_y    = 20;
+          const int temp_y    = 70;
+          const int humid_y   = 100;
+          // 各列の中心 X を計算
+          for (int idx = 2; idx < 8; idx++) {
+            int col = idx - 2;                                 // 0～5
+            int center_x = col * col_w + col_w / 2;           // 各列中央
+
+            // 1) 天気アイコン
+            // draw_weather_icon(x, y, pointer to text_sensor)
+            switch (idx) {
+              case 2: draw_weather_icon(center_x - 16, icon_y, id(forecast_day2_condition)); break;
+              case 3: draw_weather_icon(center_x - 16, icon_y, id(forecast_day3_condition)); break;
+              case 4: draw_weather_icon(center_x - 16, icon_y, id(forecast_day4_condition)); break;
+              case 5: draw_weather_icon(center_x - 16, icon_y, id(forecast_day5_condition)); break;
+              case 6: draw_weather_icon(center_x - 16, icon_y, id(forecast_day6_condition)); break;
+              case 7: draw_weather_icon(center_x - 16, icon_y, id(forecast_day7_condition)); break;
+            }
+
+            // 2) 最高/最低気温
+            switch (idx) {
+              case 2:
+                it.printf(center_x, temp_y, id(roboto14), id(white), TextAlign::TOP_CENTER,
+                  "%.0f/%.0f℃", id(forecast_day2_temp_max).state, id(forecast_day2_temp_min).state);
+                it.printf(center_x, humid_y, id(roboto12), id(white), TextAlign::TOP_CENTER,
+                  "%.0f%%", id(forecast_day2_humidity).state);
+                break;
+              case 3:
+                it.printf(center_x, temp_y, id(roboto14), id(white), TextAlign::TOP_CENTER,
+                  "%.0f/%.0f℃", id(forecast_day3_temp_max).state, id(forecast_day3_temp_min).state);
+                it.printf(center_x, humid_y, id(roboto12), id(white), TextAlign::TOP_CENTER,
+                  "%.0f%%", id(forecast_day3_humidity).state);
+                break;
+              case 4:
+                it.printf(center_x, temp_y, id(roboto14), id(white), TextAlign::TOP_CENTER,
+                  "%.0f/%.0f℃", id(forecast_day4_temp_max).state, id(forecast_day4_temp_min).state);
+                it.printf(center_x, humid_y, id(roboto12), id(white), TextAlign::TOP_CENTER,
+                  "%.0f%%", id(forecast_day4_humidity).state);
+                break;
+              case 5:
+                it.printf(center_x, temp_y, id(roboto14), id(white), TextAlign::TOP_CENTER,
+                  "%.0f/%.0f℃", id(forecast_day5_temp_max).state, id(forecast_day5_temp_min).state);
+                it.printf(center_x, humid_y, id(roboto12), id(white), TextAlign::TOP_CENTER,
+                  "%.0f%%", id(forecast_day5_humidity).state);
+                break;
+              case 6:
+                it.printf(center_x, temp_y, id(roboto14), id(white), TextAlign::TOP_CENTER,
+                  "%.0f/%.0f℃", id(forecast_day6_temp_max).state, id(forecast_day6_temp_min).state);
+                it.printf(center_x, humid_y, id(roboto12), id(white), TextAlign::TOP_CENTER,
+                  "%.0f%%", id(forecast_day6_humidity).state);
+                break;
+              case 7:
+                it.printf(center_x, temp_y, id(roboto14), id(white), TextAlign::TOP_CENTER,
+                  "%.0f/%.0f℃", id(forecast_day7_temp_max).state, id(forecast_day7_temp_min).state);
+                it.printf(center_x, humid_y, id(roboto12), id(white), TextAlign::TOP_CENTER,
+                  "%.0f%%", id(forecast_day7_humidity).state);
+                break;
+            }
+          }
 
 
 ###Fonts
@@ -137,6 +205,26 @@ font:
       - GF_Latin_Core
     glyphs:
       - "℃"
+
+  - file:
+      type: gfonts
+      family: "M PLUS Rounded 1c"
+      weight: 300
+    id: roboto12
+    size: 12
+    glyphs:
+      - "℃" 
+      - "0123456789"
+
+  - file:
+      type: gfonts
+      family: "M PLUS Rounded 1c"
+      weight: 300
+    id: roboto14
+    size: 14
+    glyphs:
+      - "%" 
+      - "0123456789"
 
 ###Global Variables
 globals:

@@ -29,8 +29,9 @@ spi:
 
 ###ディスプレイ各設定
 ###縦置き横置きなどはrotationを変更
-.display: &main_display_anchor
-  - platform: ili9xxx
+.display: 
+  - &main_display_anchor
+    platform: ili9xxx
     id: main_display
     model: ILI9341
     update_interval: 50ms
@@ -51,8 +52,7 @@ spi:
 
 ###タッチスクリーン設定
 touchscreen:
-  - &main_display_anchor
-    platform: xpt2046
+  - platform: xpt2046
     id: main_touch
     spi_id: touch
     cs_pin: GPIO33

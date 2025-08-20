@@ -46,7 +46,7 @@ color:
 
 ###Displays
 display:
-<<: *main_display_anchor
+  - *main_display_anchor
     pages:
       - id: page1
         lambda: |-

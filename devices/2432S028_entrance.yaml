@@ -46,7 +46,8 @@ color:
 
 ###Displays
 display:
-  - *main_display_anchor
+  - platform: ili9xxx
+    <<: *main_display_anchor
     pages:
       - id: page1
         lambda: |-

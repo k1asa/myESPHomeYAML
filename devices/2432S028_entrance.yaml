@@ -93,21 +93,21 @@ display:
 
           // --- 今日の天気 (画面左側) ---
           it.print(80, 15, id(roboto16), id(white), TextAlign::TOP_CENTER, "Today");
-          draw_weather_icon(40, 40, id(day0_condition));
-          if (id(day0_condition_jp).has_state()) {
-            it.print(80, 120, id(roboto16), id(white), TextAlign::TOP_CENTER, id(day0_condition_jp).state.c_str());
+          draw_weather_icon(40, 40, id(forecast_day0_condition));
+          if (id(forecast_day0_condition_jp).has_state()) {
+            it.print(80, 120, id(roboto16), id(white), TextAlign::TOP_CENTER, id(forecast_day0_condition_jp).state.c_str());
           }
-          it.printf(80, 150, id(roboto20), id(white), TextAlign::TOP_CENTER, "%.0f / %.0f ℃", id(day0_temp_high).state, id(day0_temp_low).state);
-          it.printf(80, 185, id(roboto16), id(white), TextAlign::TOP_CENTER, "%.0f%%", id(day0_precipitation_probability).state);
+          it.printf(80, 150, id(roboto20), id(white), TextAlign::TOP_CENTER, "%.0f / %.0f ℃", id(forecast_day0_temp_max).state, id(forecast_day0_temp_min).state);
+          it.printf(80, 185, id(roboto16), id(white), TextAlign::TOP_CENTER, "降水確率%.0f%%", id(forecast_day0_precip_prob).state);
 
           // --- 明日の天気 (画面右側) ---
           it.print(240, 15, id(roboto16), id(white), TextAlign::TOP_CENTER, "Next");
-          draw_weather_icon(200, 40, id(day1_condition));
-          if (id(day1_condition_jp).has_state()) {
-            it.print(240, 120, id(roboto16), id(white), TextAlign::TOP_CENTER, id(day1_condition_jp).state.c_str());
+          draw_weather_icon(200, 40, id(forecast_day1_condition));
+          if (id(forecast_day1_condition_jp).has_state()) {
+            it.print(240, 120, id(roboto16), id(white), TextAlign::TOP_CENTER, id(forecast_day1_condition_jp).state.c_str());
           }
-          it.printf(240, 150, id(roboto20), id(white), TextAlign::TOP_CENTER, "%.0f / %.0f ℃", id(day1_temp_high).state, id(day1_temp_low).state);
-          it.printf(240, 185, id(roboto16), id(white), TextAlign::TOP_CENTER, "%.0f%%", id(day1_precipitation_probability).state);
+          it.printf(240, 150, id(roboto20), id(white), TextAlign::TOP_CENTER, "%.0f / %.0f ℃", id(forecast_day1_temp_max).state, id(forecast_day1_temp_min).state);
+          it.printf(240, 185, id(roboto16), id(white), TextAlign::TOP_CENTER, "降水確率%.0f%%", id(forecast_day1_precip_prob).state);
 
 
 ###Fonts
@@ -122,7 +122,7 @@ font:
       - GF_Latin_Core
     glyphs:
       - "%" # パーセント
-      - "快晴(夜)曇霧雹雷雨一全部豪雪みぞれ強風異常気象不明" # 日本語の天気名
+      - "快晴(夜)曇霧雹雷雨一全部豪雪みぞれ強風異常気象不明降水確率" # 日本語の天気名
       - "TodayNext" # ラベル
       - "0123456789" # 数字
       - " /" # スラッシュと半角スペース
@@ -224,57 +224,52 @@ interval:
       # main_displayの次のページを表示します (最後まで行ったら自動で先頭に戻ります)
       - display.page.show_next: main_display
 
+# Sensorの共通テンプレート定義
+sensor_common: &sensor_common
+  platform: homeassistant
+  entity_id: sensor.daily_forecast_data
+  attribute: forecast_data
+
+# Jinja 定義部（インデントしない）
+{% set days = range(0, 7) %}
+{% set sensor_defs = [
+    {'key':'precip_prob', 'unit':'%',  'common':'sensor_common'},
+    {'key':'temp_max',    'unit':'°C', 'common':'sensor_common'},
+    {'key':'temp_min',    'unit':'°C', 'common':'sensor_common'},
+    {'key':'humidity',    'unit':'%', 'common':'sensor_common'}
+] %}
+{% set text_defs = [
+    {'key':'condition',    'common':'sensor_common'},
+    {'key':'condition_jp', 'common':'sensor_common'}
+] %}
+
+
 ###Sensors
 sensor:
-  # 天気予報用のSensor (10個)
-  # --- Day 0 (今日) ---
-  - platform: homeassistant
-    entity_id: sensor.openweathermap_forecast_day0_precipitation
-    id: day0_precipitation
-  - platform: homeassistant
-    entity_id: sensor.openweathermap_forecast_day0_precipitation_probability
-    id: day0_precipitation_probability
-  - platform: homeassistant
-    entity_id: sensor.openweathermap_forecast_day0_temperature
-    id: day0_temp_high
-  - platform: homeassistant
-    entity_id: sensor.openweathermap_forecast_day0_temperature_low
-    id: day0_temp_low
-  - platform: homeassistant
-    entity_id: sensor.openweathermap_forecast_day0_humidity
-    id: day0_humidity
-
-  # --- Day 1 (明日) ---
-  - platform: homeassistant
-    entity_id: sensor.openweathermap_forecast_day1_precipitation
-    id: day1_precipitation
-  - platform: homeassistant
-    entity_id: sensor.openweathermap_forecast_day1_precipitation_probability
-    id: day1_precipitation_probability
-  - platform: homeassistant
-    entity_id: sensor.openweathermap_forecast_day1_temperature
-    id: day1_temp_high
-  - platform: homeassistant
-    entity_id: sensor.openweathermap_forecast_day1_temperature_low
-    id: day1_temp_low
-  - platform: homeassistant
-    entity_id: sensor.openweathermap_forecast_day1_humidity
-    id: day1_humidity
+# 数値センサーの自動生成
+{% for d in days %}
+{% for s in sensor_defs %}
+  - <<: *{{ s.common }}
+    filters:
+      - json:
+          path: "$[{{ d }}].{{ s.key }}"
+    unit_of_measurement: "{{ s.unit }}"
+    id: forecast_day{{ d }}_{{ s.key }}
+{% endfor %}
+{% endfor %}
 
 ###Text Sensor
 text_sensor:
-  - platform: homeassistant
-    entity_id: sensor.openweathermap_forecast_day0_condition
-    id: day0_condition
-  - platform: homeassistant
-    entity_id: sensor.openweathermap_forecast_day1_condition
-    id: day1_condition    
-  - platform: homeassistant
-    entity_id: sensor.openweathermap_forecast_day0_condition_jp
-    id: day0_condition_jp
-  - platform: homeassistant
-    entity_id: sensor.openweathermap_forecast_day1_condition_jp
-    id: day1_condition_jp
+# テキストセンサーの自動生成
+{% for d in days %}
+{% for t in text_defs %}
+  - <<: *{{ t.common }}
+    filters:
+      - json:
+          path: "$[{{ d }}].{{ t.key }}"
+    id: forecast_day{{ d }}_{{ t.key }}
+{% endfor %}
+{% endfor %}
 
 ###Touch Screens
 touchscreen:

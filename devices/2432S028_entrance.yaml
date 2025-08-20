@@ -9,6 +9,9 @@ esphome:
   name: ${name}
   friendly_name: ${friendly_name}
 
+# 共通WiFi設定
+<<: !include ../common/wifi.yaml
+
 #esp32:
 #  framework:
 #    type: arduino
@@ -21,6 +24,8 @@ esphome:
 
 
 #####Custom#####
+<<: !include ../common/2432s028.yaml
+
 ###Colors
 color:
   - id: ha_blue
@@ -47,24 +52,8 @@ color:
 ###Displays
 ###縦置き横置きなどはrotationを変更
 display:
-  - platform: ili9xxx
-    id: main_display
-    model: ILI9341
-    update_interval: 50ms
-    color_palette: 8BIT
-    spi_id: tft
-    color_order: rgb
-    invert_colors: false
-    cs_pin:
-      number: 15
-      ignore_strapping_warning: true
-    dc_pin:
-      number:  2
-      ignore_strapping_warning: true
+  - <<: !include ../common/2432s028_display.yaml
     rotation: 0°
-    dimensions:
-      height: 240
-      width: 320
     pages:
       - id: page1
         lambda: |-
@@ -289,8 +278,7 @@ text_sensor:
 
 ###Touch Screens
 touchscreen:
-  - id: main_touch
-    platform: xpt2046
+  - <<: !include ../common/2432s028_touch.yaml
     on_touch:
       lambda: |-
         id(touch_x_val) = touch.x;

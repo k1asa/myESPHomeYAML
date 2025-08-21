@@ -53,39 +53,56 @@ display:
           
       - id: page2
         lambda: |-
-          auto draw_weather_icon = [&](auto &it, int x, int y, text_sensor::TextSensor *condition_sensor) {
-            if (!condition_sensor->has_state()) {
-              it.print(x + 40, y + 40, id(roboto20), id(white), TextAlign::CENTER, "?");
-              return;
-            }
-            std::string condition = condition_sensor->state;
-            if (condition == "sunny") { it.image(x, y, id(weather_sunny)); }
-            else if (condition == "clear-night") { it.image(x, y, id(weather_clear_night)); }
-            else if (condition == "cloudy") { it.image(x, y, id(weather_cloudy)); }
-            else if (condition == "partlycloudy") { it.image(x, y, id(weather_partlycloudy)); }
-            else if (condition == "rainy") { it.image(x, y, id(weather_rainy)); }
-            else if (condition == "pouring") { it.image(x, y, id(weather_pouring)); }
-            else if (condition == "lightning-rainy") { it.image(x, y, id(weather_lightning_rainy)); }
-            else if (condition == "snowy") { it.image(x, y, id(weather_snowy)); }
-            else if (condition == "snowy-rainy") { it.image(x, y, id(weather_snowy_rainy)); }
-            else if (condition == "windy" || condition == "windy-variant") { it.image(x, y, id(weather_windy_variant)); }
-            else if (condition == "fog") { it.image(x, y, id(weather_fog)); }
-            else if (condition == "hail") { it.image(x, y, id(weather_hail)); }
-            else if (condition == "lightning") { it.image(x, y, id(weather_lightning)); }
-            else { it.image(x, y, id(weather_cloudy)); }
-          };
-
+          ###day0 今日
           it.line(160, 20, 160, 220, id(white));
           it.print(80, 15, id(roboto16), id(white), TextAlign::TOP_CENTER, "Today");
-          draw_weather_icon(it, 40, 40, id(forecast_day0_condition));
+
+          // 天気conditionからglyphコードを決定
+          int icon_code0 = 0xf013; // default: cloudy
+          if (id(forecast_day0_condition).state == "sunny") icon_code0 = 0xf00d;
+          else if (id(forecast_day0_condition).state == "clear-night") icon_code0 = 0xf02e;
+          else if (id(forecast_day0_condition).state == "cloudy") icon_code0 = 0xf013;
+          else if (id(forecast_day0_condition).state == "fog") icon_code0 = 0xf014;
+          else if (id(forecast_day0_condition).state == "hail") icon_code0 = 0xf015;
+          else if (id(forecast_day0_condition).state == "lightning") icon_code0 = 0xf016;
+          else if (id(forecast_day0_condition).state == "lightning-rainy") icon_code0 = 0xf01e;
+          else if (id(forecast_day0_condition).state == "partlycloudy") icon_code0 = 0xf002;
+          else if (id(forecast_day0_condition).state == "pouring") icon_code0 = 0xf018;
+          else if (id(forecast_day0_condition).state == "rainy") icon_code0 = 0xf017;
+          else if (id(forecast_day0_condition).state == "snowy") icon_code0 = 0xf01b;
+          else if (id(forecast_day0_condition).state == "snowy-rainy") icon_code0 = 0xf0b5;
+          else if (id(forecast_day0_condition).state == "windy") icon_code0 = 0xf050;
+          else if (id(forecast_day0_condition).state == "windy-variant") icon_code0 = 0xf012;
+          else if (id(forecast_day0_condition).state == "exceptional") icon_code0 = 0xf056;
+          it.printf(40, 40, id(weathericon80), id(white), TextAlign::TOP_CENTER, "%c", icon_code0);
+
           if (id(forecast_day0_condition_jp).has_state()) {
             it.print(80, 120, id(roboto16), id(white), TextAlign::TOP_CENTER, id(forecast_day0_condition_jp).state.c_str());
           }
           it.printf(80, 150, id(roboto20), id(white), TextAlign::TOP_CENTER, "%.0f / %.0f ℃", id(forecast_day0_temp_max).state, id(forecast_day0_temp_min).state);
           it.printf(80, 185, id(roboto16), id(white), TextAlign::TOP_CENTER, "降水確率%.0f%%", id(forecast_day0_precip_prob).state);
 
+          ###day1 明日
           it.print(240, 15, id(roboto16), id(white), TextAlign::TOP_CENTER, "Next");
-          draw_weather_icon(it, 200, 40, id(forecast_day1_condition));
+
+          int icon_code1 = 0xf013; // default: cloudy
+          if (id(forecast_day1_condition).state == "sunny") icon_code1 = 0xf00d;
+          else if (id(forecast_day1_condition).state == "clear-night") icon_code1 = 0xf02e;
+          else if (id(forecast_day1_condition).state == "cloudy") icon_code1 = 0xf013;
+          else if (id(forecast_day1_condition).state == "fog") icon_code1 = 0xf014;
+          else if (id(forecast_day1_condition).state == "hail") icon_code1 = 0xf015;
+          else if (id(forecast_day1_condition).state == "lightning") icon_code1 = 0xf016;
+          else if (id(forecast_day1_condition).state == "lightning-rainy") icon_code1 = 0xf01e;
+          else if (id(forecast_day1_condition).state == "partlycloudy") icon_code1 = 0xf002;
+          else if (id(forecast_day1_condition).state == "pouring") icon_code1 = 0xf018;
+          else if (id(forecast_day1_condition).state == "rainy") icon_code1 = 0xf017;
+          else if (id(forecast_day1_condition).state == "snowy") icon_code1 = 0xf01b;
+          else if (id(forecast_day1_condition).state == "snowy-rainy") icon_code1 = 0xf0b5;
+          else if (id(forecast_day1_condition).state == "windy") icon_code1 = 0xf050;
+          else if (id(forecast_day1_condition).state == "windy-variant") icon_code1 = 0xf012;
+          else if (id(forecast_day1_condition).state == "exceptional") icon_code1 = 0xf056;
+          it.printf(200, 40, id(weathericon80), id(white), TextAlign::TOP_CENTER, "%c", icon_code1);
+
           if (id(forecast_day1_condition_jp).has_state()) {
             it.print(240, 120, id(roboto16), id(white), TextAlign::TOP_CENTER, id(forecast_day1_condition_jp).state.c_str());
           }
@@ -94,26 +111,25 @@ display:
 
       - id: page3
         lambda: |-
-          auto draw_weather_icon = [&](auto &it, int x, int y, text_sensor::TextSensor *condition_sensor) {
-            if (!condition_sensor->has_state()) {
-              it.print(x + 40, y + 40, id(roboto20), id(white), TextAlign::CENTER, "?");
-              return;
-            }
+          // 天気conditionからglyphコード取得関数
+          auto get_weather_icon_code = [](text_sensor::TextSensor *condition_sensor) -> int {
+            if (!condition_sensor->has_state()) return -1;
             std::string condition = condition_sensor->state;
-            if (condition == "sunny") { it.image(x, y, id(weather_sunny)); }
-            else if (condition == "clear-night") { it.image(x, y, id(weather_clear_night)); }
-            else if (condition == "cloudy") { it.image(x, y, id(weather_cloudy)); }
-            else if (condition == "partlycloudy") { it.image(x, y, id(weather_partlycloudy)); }
-            else if (condition == "rainy") { it.image(x, y, id(weather_rainy)); }
-            else if (condition == "pouring") { it.image(x, y, id(weather_pouring)); }
-            else if (condition == "lightning-rainy") { it.image(x, y, id(weather_lightning_rainy)); }
-            else if (condition == "snowy") { it.image(x, y, id(weather_snowy)); }
-            else if (condition == "snowy-rainy") { it.image(x, y, id(weather_snowy_rainy)); }
-            else if (condition == "windy" || condition == "windy-variant") { it.image(x, y, id(weather_windy_variant)); }
-            else if (condition == "fog") { it.image(x, y, id(weather_fog)); }
-            else if (condition == "hail") { it.image(x, y, id(weather_hail)); }
-            else if (condition == "lightning") { it.image(x, y, id(weather_lightning)); }
-            else { it.image(x, y, id(weather_cloudy)); }
+            if (condition == "sunny") return 0xf00d;
+            else if (condition == "clear-night") return 0xf02e;
+            else if (condition == "cloudy") return 0xf013;
+            else if (condition == "partlycloudy") return 0xf002;
+            else if (condition == "rainy") return 0xf017;
+            else if (condition == "pouring") return 0xf018;
+            else if (condition == "lightning-rainy") return 0xf01e;
+            else if (condition == "snowy") return 0xf01b;
+            else if (condition == "snowy-rainy") return 0xf0b5;
+            else if (condition == "windy" || condition == "windy-variant") return 0xf012;
+            else if (condition == "fog") return 0xf014;
+            else if (condition == "hail") return 0xf015;
+            else if (condition == "lightning") return 0xf016;
+            else if (condition == "exceptional") return 0xf056;
+            else return 0xf013; // default: cloudy
           };
 
           const int count = 6;
@@ -124,57 +140,58 @@ display:
           const int icon_y    = 20;
           const int temp_y    = 70;
           const int humid_y   = 100;
+
           for (int idx = 2; idx < 8; idx++) {
             int col = idx - 2;
             int center_x = col * col_w + col_w / 2;
 
-            switch (idx) {
-              case 2: draw_weather_icon(it, center_x - 16, icon_y, id(forecast_day2_condition)); break;
-              case 3: draw_weather_icon(it, center_x - 16, icon_y, id(forecast_day3_condition)); break;
-              case 4: draw_weather_icon(it, center_x - 16, icon_y, id(forecast_day4_condition)); break;
-              case 5: draw_weather_icon(it, center_x - 16, icon_y, id(forecast_day5_condition)); break;
-              case 6: draw_weather_icon(it, center_x - 16, icon_y, id(forecast_day6_condition)); break;
-              case 7: draw_weather_icon(it, center_x - 16, icon_y, id(forecast_day7_condition)); break;
-            }
+            text_sensor::TextSensor *cond_sensor = nullptr;
+            float temp_max = 0, temp_min = 0, humidity = 0;
 
             switch (idx) {
-              case 2:
-                it.printf(center_x, temp_y, id(roboto14), id(white), TextAlign::TOP_CENTER,
-                  "%.0f/%.0f℃", id(forecast_day2_temp_max).state, id(forecast_day2_temp_min).state);
-                it.printf(center_x, humid_y, id(roboto12), id(white), TextAlign::TOP_CENTER,
-                  "%.0f%%", id(forecast_day2_humidity).state);
-                break;
-              case 3:
-                it.printf(center_x, temp_y, id(roboto14), id(white), TextAlign::TOP_CENTER,
-                  "%.0f/%.0f℃", id(forecast_day3_temp_max).state, id(forecast_day3_temp_min).state);
-                it.printf(center_x, humid_y, id(roboto12), id(white), TextAlign::TOP_CENTER,
-                  "%.0f%%", id(forecast_day3_humidity).state);
-                break;
-              case 4:
-                it.printf(center_x, temp_y, id(roboto14), id(white), TextAlign::TOP_CENTER,
-                  "%.0f/%.0f℃", id(forecast_day4_temp_max).state, id(forecast_day4_temp_min).state);
-                it.printf(center_x, humid_y, id(roboto12), id(white), TextAlign::TOP_CENTER,
-                  "%.0f%%", id(forecast_day4_humidity).state);
-                break;
-              case 5:
-                it.printf(center_x, temp_y, id(roboto14), id(white), TextAlign::TOP_CENTER,
-                  "%.0f/%.0f℃", id(forecast_day5_temp_max).state, id(forecast_day5_temp_min).state);
-                it.printf(center_x, humid_y, id(roboto12), id(white), TextAlign::TOP_CENTER,
-                  "%.0f%%", id(forecast_day5_humidity).state);
-                break;
-              case 6:
-                it.printf(center_x, temp_y, id(roboto14), id(white), TextAlign::TOP_CENTER,
-                  "%.0f/%.0f℃", id(forecast_day6_temp_max).state, id(forecast_day6_temp_min).state);
-                it.printf(center_x, humid_y, id(roboto12), id(white), TextAlign::TOP_CENTER,
-                  "%.0f%%", id(forecast_day6_humidity).state);
-                break;
-              case 7:
-                it.printf(center_x, temp_y, id(roboto14), id(white), TextAlign::TOP_CENTER,
-                  "%.0f/%.0f℃", id(forecast_day7_temp_max).state, id(forecast_day7_temp_min).state);
-                it.printf(center_x, humid_y, id(roboto12), id(white), TextAlign::TOP_CENTER,
-                  "%.0f%%", id(forecast_day7_humidity).state);
-                break;
+              case 2: cond_sensor = id(forecast_day2_condition);
+                      temp_max = id(forecast_day2_temp_max).state;
+                      temp_min = id(forecast_day2_temp_min).state;
+                      humidity = id(forecast_day2_humidity).state;
+                      break;
+              case 3: cond_sensor = id(forecast_day3_condition);
+                      temp_max = id(forecast_day3_temp_max).state;
+                      temp_min = id(forecast_day3_temp_min).state;
+                      humidity = id(forecast_day3_humidity).state;
+                      break;
+              case 4: cond_sensor = id(forecast_day4_condition);
+                      temp_max = id(forecast_day4_temp_max).state;
+                      temp_min = id(forecast_day4_temp_min).state;
+                      humidity = id(forecast_day4_humidity).state;
+                      break;
+              case 5: cond_sensor = id(forecast_day5_condition);
+                      temp_max = id(forecast_day5_temp_max).state;
+                      temp_min = id(forecast_day5_temp_min).state;
+                      humidity = id(forecast_day5_humidity).state;
+                      break;
+              case 6: cond_sensor = id(forecast_day6_condition);
+                      temp_max = id(forecast_day6_temp_max).state;
+                      temp_min = id(forecast_day6_temp_min).state;
+                      humidity = id(forecast_day6_humidity).state;
+                      break;
+              case 7: cond_sensor = id(forecast_day7_condition);
+                      temp_max = id(forecast_day7_temp_max).state;
+                      temp_min = id(forecast_day7_temp_min).state;
+                      humidity = id(forecast_day7_humidity).state;
+                      break;
             }
+
+            // it.printfでweathericon40フォントを使って天気アイコン表示
+            int icon_code = get_weather_icon_code(cond_sensor);
+            if (icon_code == -1) {
+              it.print(center_x, icon_y + 40, id(roboto20), id(white), TextAlign::CENTER, "?");
+            } else {
+              it.printf(center_x, icon_y, id(weathericon40), id(white), TextAlign::TOP_CENTER, "%c", icon_code);
+            }
+
+            // 気温・湿度表示
+            it.printf(center_x, temp_y, id(roboto14), id(white), TextAlign::TOP_CENTER, "%.0f/%.0f℃", temp_max, temp_min);
+            it.printf(center_x, humid_y, id(roboto12), id(white), TextAlign::TOP_CENTER, "%.0f%%", humidity);
           }
 
 ###Fonts
@@ -233,6 +250,46 @@ font:
       - "/"
       - "℃"
 
+    #天気アイコンフォント
+  - file: "https://github.com/erikflowers/weather-icons/raw/master/font/weathericons-regular-webfont.ttf"
+    id: weathericon40
+    size: 40
+    glyphs:
+      - "\uf00d"  # sunny
+      - "\uf02e"  # clear-night
+      - "\uf013"  # cloudy
+      - "\uf014"  # fog
+      - "\uf015"  # hail
+      - "\uf016"  # lightning
+      - "\uf01e"  # lightning-rainy
+      - "\uf002"  # partlycloudy
+      - "\uf018"  # pouring
+      - "\uf017"  # rainy
+      - "\uf01b"  # snowy
+      - "\uf0b5"  # snowy-rainy
+      - "\uf050"  # windy
+      - "\uf012"  # windy-variant
+      - "\uf056"  # exceptional
+  - file: "https://github.com/erikflowers/weather-icons/raw/master/font/weathericons-regular-webfont.ttf"
+    id: weathericon80
+    size: 80
+    glyphs:
+      - "\uf00d"  # sunny
+      - "\uf02e"  # clear-night
+      - "\uf013"  # cloudy
+      - "\uf014"  # fog
+      - "\uf015"  # hail
+      - "\uf016"  # lightning
+      - "\uf01e"  # lightning-rainy
+      - "\uf002"  # partlycloudy
+      - "\uf018"  # pouring
+      - "\uf017"  # rainy
+      - "\uf01b"  # snowy
+      - "\uf0b5"  # snowy-rainy
+      - "\uf050"  # windy
+      - "\uf012"  # windy-variant
+      - "\uf056"  # exceptional
+
 ###Global Variables
 globals:
   - id: touch_x_val
@@ -243,74 +300,6 @@ globals:
     type: float
     restore_value: no
     initial_value: '0.0'
-
-###Images
-image:
-  - file: mdi:weather-night   #夜晴れ
-    id: weather_clear_night
-    type: grayscale
-    transparency: alpha_channel
-    resize: 80x80
-  - file: mdi:weather-cloudy   #曇り
-    id: weather_cloudy
-    type: grayscale
-    transparency: alpha_channel
-    resize: 80x80
-  - file: mdi:weather-fog   #霧
-    id: weather_fog
-    type: grayscale
-    transparency: alpha_channel
-    resize: 80x80
-  - file: mdi:weather-hail   #雹
-    id: weather_hail
-    type: grayscale
-    transparency: alpha_channel
-    resize: 80x80
-  - file: mdi:weather-lightning   #雷
-    id: weather_lightning
-    type: grayscale
-    transparency: alpha_channel
-    resize: 80x80
-  - file: mdi:weather-lightning-rainy   #雷雨
-    id: weather_lightning_rainy
-    type: grayscale
-    transparency: alpha_channel
-    resize: 80x80
-  - file: mdi:weather-partly-cloudy   #部分的に曇り
-    id: weather_partlycloudy
-    type: grayscale
-    transparency: alpha_channel
-    resize: 80x80
-  - file: mdi:weather-pouring   #土砂降り
-    id: weather_pouring
-    type: grayscale
-    transparency: alpha_channel
-    resize: 80x80
-  - file: mdi:weather-rainy   #雨
-    id: weather_rainy
-    type: grayscale
-    transparency: alpha_channel
-    resize: 80x80
-  - file: mdi:weather-snowy   #雪
-    id: weather_snowy
-    type: grayscale
-    transparency: alpha_channel
-    resize: 80x80
-  - file: mdi:weather-snowy-rainy   #みぞれ
-    id: weather_snowy_rainy
-    type: grayscale
-    transparency: alpha_channel
-    resize: 80x80
-  - file: mdi:weather-sunny   #晴れ
-    id: weather_sunny
-    type: grayscale
-    transparency: alpha_channel
-    resize: 80x80
-  - file: mdi:weather-windy-variant   #曇りと強風,強風
-    id: weather_windy_variant
-    type: grayscale
-    transparency: alpha_channel
-    resize: 80x80
 
 ###Interval
 interval:

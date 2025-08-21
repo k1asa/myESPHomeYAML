@@ -224,9 +224,9 @@ display:
             struct tm tm2 = *localtime(&t2);
             const char* wlabel = wdays[tm2.tm_wday];
 
-            it.print(center_x, wlabel_y, id(roboto12), id(white), TextAlign::TOP_CENTER, wlabel);
+            it.print(center_x - 45, wlabel_y, id(roboto12), id(white), TextAlign::TOP_LEFT, wlabel);
             if (condjp_sensor && condjp_sensor->has_state()) {
-              it.print(center_x, wlabel_y, id(roboto12), id(white), TextAlign::TOP_RIGHT, condjp_sensor->state.c_str());
+              it.print(center_x + 45, wlabel_y, id(roboto12), id(white), TextAlign::TOP_RIGHT, condjp_sensor->state.c_str());
             }
 
             int icon_code = get_weather_icon_code(cond_sensor);

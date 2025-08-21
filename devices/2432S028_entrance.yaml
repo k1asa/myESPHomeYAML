@@ -252,40 +252,40 @@ font:
     id: weathericon40
     size: 40
     glyphs:
-  - "\uf00d"  # sunny
-  - "\uf02e"  # clear-night
-  - "\uf013"  # cloudy
-  - "\uf014"  # fog
-  - "\uf015"  # hail
-  - "\uf016"  # lightning
-  - "\uf01e"  # lightning-rainy
-  - "\uf002"  # partlycloudy
-  - "\uf018"  # pouring
-  - "\uf017"  # rainy
-  - "\uf01b"  # snowy
-  - "\uf0b5"  # snowy-rainy
-  - "\uf050"  # windy
-  - "\uf012"  # windy-variant
-  - "\uf056"  # exceptional
+      - "\uf00d"  # sunny
+      - "\uf02e"  # clear-night
+      - "\uf013"  # cloudy
+      - "\uf014"  # fog
+      - "\uf015"  # hail
+      - "\uf016"  # lightning
+      - "\uf01e"  # lightning-rainy
+      - "\uf002"  # partlycloudy
+      - "\uf018"  # pouring
+      - "\uf017"  # rainy
+      - "\uf01b"  # snowy
+      - "\uf0b5"  # snowy-rainy
+      - "\uf050"  # windy
+      - "\uf012"  # windy-variant
+      - "\uf056"  # exceptional
   - file: "https://github.com/erikflowers/weather-icons/raw/master/font/weathericons-regular-webfont.ttf"
     id: weathericon80
     size: 80
     glyphs:
-  - "\uf00d"  # sunny
-  - "\uf02e"  # clear-night
-  - "\uf013"  # cloudy
-  - "\uf014"  # fog
-  - "\uf015"  # hail
-  - "\uf016"  # lightning
-  - "\uf01e"  # lightning-rainy
-  - "\uf002"  # partlycloudy
-  - "\uf018"  # pouring
-  - "\uf017"  # rainy
-  - "\uf01b"  # snowy
-  - "\uf0b5"  # snowy-rainy
-  - "\uf050"  # windy
-  - "\uf012"  # windy-variant
-  - "\uf056"  # exceptional
+      - "\uf00d"  # sunny
+      - "\uf02e"  # clear-night
+      - "\uf013"  # cloudy
+      - "\uf014"  # fog
+      - "\uf015"  # hail
+      - "\uf016"  # lightning
+      - "\uf01e"  # lightning-rainy
+      - "\uf002"  # partlycloudy
+      - "\uf018"  # pouring
+      - "\uf017"  # rainy
+      - "\uf01b"  # snowy
+      - "\uf0b5"  # snowy-rainy
+      - "\uf050"  # windy
+      - "\uf012"  # windy-variant
+      - "\uf056"  # exceptional
 
 ###Global Variables
 globals:

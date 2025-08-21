@@ -77,17 +77,12 @@ display:
           const int screen_w = it.get_width();
           const int left_x = screen_w / 4;
           const int right_x = screen_w * 3 / 4;
-          const int cond_y = 120;
-          const int precip_y = 185;
-          const int center_y = (cond_y + precip_y) / 2;
-          const int icon_h = 80; // weathericon80 size
-          const int icon_y = center_y - icon_h / 2;
 
           // 画面中央に縦に線を引く
           it.line(160, 20, 160, 220, id(white));
 
           //day0 今日
-          it.print(left_x, 15, id(roboto16), id(white), TextAlign::TOP_CENTER, "Today");
+          it.print(left_x, 10, id(roboto16), id(white), TextAlign::TOP_CENTER, "Today");
 
           // 天気conditionからglyphコードを決定し、天気アイコンを表示
           int icon_code0 = 0xf013; // default: cloudy
@@ -106,16 +101,16 @@ display:
           else if (id(forecast_day0_condition).state == "windy") icon_code0 = 0xf050;
           else if (id(forecast_day0_condition).state == "windy-variant") icon_code0 = 0xf012;
           else if (id(forecast_day0_condition).state == "exceptional") icon_code0 = 0xf056;
-          it.print(left_x, icon_y, id(weathericon80), id(white), TextAlign::TOP_CENTER, utf8_from_code(icon_code0).c_str());
+          it.print(left_x, 54, id(weathericon80), id(white), TextAlign::TOP_CENTER, utf8_from_code(icon_code0).c_str());
           if (id(forecast_day0_condition_jp).has_state()) {
-            it.print(left_x, 120, id(roboto16), id(white), TextAlign::TOP_CENTER, id(forecast_day0_condition_jp).state.c_str());
+            it.print(left_x, 122, id(roboto16), id(white), TextAlign::TOP_CENTER, id(forecast_day0_condition_jp).state.c_str());
           }
-          it.printf(left_x, 150, id(roboto20), id(white), TextAlign::TOP_CENTER, "%.0f / %.0f ℃", id(forecast_day0_temp_max).state, id(forecast_day0_temp_min).state);
-          it.printf(left_x, 185, id(roboto16), id(white), TextAlign::TOP_CENTER, "降水確率%.0f%%", id(forecast_day0_precip_prob).state);
+          it.printf(left_x, 166, id(roboto20), id(white), TextAlign::TOP_CENTER, "%.0f / %.0f ℃", id(forecast_day0_temp_max).state, id(forecast_day0_temp_min).state);
+          it.printf(left_x, 214, id(roboto16), id(white), TextAlign::TOP_CENTER, "☂ %.0f%%", id(forecast_day0_precip_prob).state);
 
-          // 明日ブロック
           //day1 明日
-          it.print(right_x, 15, id(roboto16), id(white), TextAlign::TOP_CENTER, "Next");
+          it.print(right_x, 10, id(roboto16), id(white), TextAlign::TOP_CENTER, "Next");
+
           int icon_code1 = 0xf013; // default: cloudy
           if (id(forecast_day1_condition).state == "sunny") icon_code1 = 0xf00d;
           else if (id(forecast_day1_condition).state == "clear-night") icon_code1 = 0xf02e;
@@ -132,12 +127,13 @@ display:
           else if (id(forecast_day1_condition).state == "windy") icon_code1 = 0xf050;
           else if (id(forecast_day1_condition).state == "windy-variant") icon_code1 = 0xf012;
           else if (id(forecast_day1_condition).state == "exceptional") icon_code1 = 0xf056;
-          it.print(right_x, icon_y, id(weathericon80), id(white), TextAlign::TOP_CENTER, utf8_from_code(icon_code1).c_str());
+          it.print(right_x, 54, id(weathericon80), id(white), TextAlign::TOP_CENTER, utf8_from_code(icon_code1).c_str());
+
           if (id(forecast_day1_condition_jp).has_state()) {
-            it.print(right_x, 120, id(roboto16), id(white), TextAlign::TOP_CENTER, id(forecast_day1_condition_jp).state.c_str());
+            it.print(right_x, 122, id(roboto16), id(white), TextAlign::TOP_CENTER, id(forecast_day1_condition_jp).state.c_str());
           }
-          it.printf(right_x, 150, id(roboto20), id(white), TextAlign::TOP_CENTER, "%.0f / %.0f ℃", id(forecast_day1_temp_max).state, id(forecast_day1_temp_min).state);
-          it.printf(right_x, 185, id(roboto16), id(white), TextAlign::TOP_CENTER, "降水確率%.0f%%", id(forecast_day1_precip_prob).state);
+          it.printf(right_x, 166, id(roboto20), id(white), TextAlign::TOP_CENTER, "%.0f / %.0f ℃", id(forecast_day1_temp_max).state, id(forecast_day1_temp_min).state);
+          it.printf(right_x, 214, id(roboto16), id(white), TextAlign::TOP_CENTER, "☂ %.0f%%", id(forecast_day1_precip_prob).state);
 
       - id: page3
         lambda: |-
@@ -211,26 +207,26 @@ display:
                       break;
             }
 
-            // Arrange 6 forecast items in 2 rows x 3 columns, and print weekday above each icon
+            // 6日分の予報を2行3列で配置し、各アイコンの上に曜日を表示
             {
-              const char* wdays[] = {"日","月","火","水","木","金","土"};
-              time_t now = time(nullptr);
-              const int cols = 3;
-              const int rows = 2;
+              const char* wdays[] = {"日","月","火","水","木","金","土"}; // 曜日ラベル
+              time_t now = time(nullptr); // 現在の時刻を取得
+              const int cols = 3; // 3列
+              const int rows = 2; // 2行
               const int items = 6; // forecast_day2..7
-              const int screen_w2 = it.get_width();
-              const int screen_h2 = it.get_height();
-              const int col_w2 = screen_w2 / cols;
-              const int top_margin = 10;
-              const int row_h2 = (screen_h2 - top_margin - 10) / rows;
+              const int screen_w2 = it.get_width(); // 画面の幅を取得
+              const int screen_h2 = it.get_height(); // 画面の高さを取得
+              const int col_w2 = screen_w2 / cols; //各列の幅
+              const int margin = 8; //上下の余白
+              const int row_h2 = (screen_h2 - margin - margin) / rows; //各行の高さ
 
-              for (int pos = 0; pos < items; pos++) {
-                int idx = pos + 2; // maps to day2..day7
-                int col = pos % cols;
-                int row = pos / cols;
-                int center_x = col * col_w2 + col_w2 / 2;
-                int icon_top_y = top_margin + row * row_h2 + 12;
-                int icon_center_y = icon_top_y + 20; // adjust for weathericon40
+              for (int pos = 0; pos < items; pos++) { // posは0から5まで繰り返し
+                int idx = pos + 2; // 予報日インデックス (2=2日後, 3=3日後, ... 7=7日後)
+                int col = pos % cols; // 列番号
+                int row = pos / cols; // 行番号
+                int center_x = col * col_w2 + col_w2 / 2; // 中央のX座標を計算
+                int wlabel_y = margin + row * row_h2; // 曜日のY座標
+                int icon_center_y = margin + row * row_h2 + 20; // 天気アイコンや？の表示位置の中央を算出
 
                 text_sensor::TextSensor *cond_sensor = nullptr;
                 float temp_max = 0, temp_min = 0, humidity = 0;
@@ -267,17 +263,17 @@ display:
                           break;
                 }
 
-                // compute weekday label for this forecast (offset = idx days from today)
+                // 予報の曜日ラベルを計算する（オフセット = 今日から idx 日後）
                 time_t t2 = now + (idx) * 24 * 60 * 60;
                 struct tm *tm2 = localtime(&t2);
                 const char* wlabel = wdays[tm2->tm_wday];
-                // print weekday above icon
-                it.print(center_x, icon_top_y, id(roboto12), id(white), TextAlign::TOP_CENTER, wlabel);
+                // アイコン上に曜日ラベルを表示
+                it.print(center_x, wlabel_y, id(roboto12), id(white), TextAlign::TOP_CENTER, wlabel);
 
-                // icon
+                // アイコン表示
                 int icon_code = get_weather_icon_code(cond_sensor);
                 if (icon_code == -1) {
-                  it.print(center_x, icon_center_y + 10, id(roboto20), id(white), TextAlign::CENTER, "?");
+                  it.print(center_x, icon_center_y, id(roboto20), id(white), TextAlign::CENTER, "?");
                 } else {
                   char icon_utf8b[5] = {0};
                   int cpb = icon_code;
@@ -296,10 +292,10 @@ display:
                     icon_utf8b[2] = 0x80 | ((cpb >> 6) & 0x3F);
                     icon_utf8b[3] = 0x80 | (cpb & 0x3F);
                   }
-                  it.print(center_x, icon_center_y, id(weathericon40), id(white), TextAlign::TOP_CENTER, icon_utf8b);
+                  it.print(center_x, icon_center_y, id(weathericon40), id(white), TextAlign::CENTER, icon_utf8b);
                 }
 
-                // temperature and humidity under icon
+                // アイコンの下に気温と湿度を表示
                 it.printf(center_x, icon_center_y + 36, id(roboto14), id(white), TextAlign::TOP_CENTER, "%.0f/%.0f℃", temp_max, temp_min);
                 it.printf(center_x, icon_center_y + 56, id(roboto12), id(white), TextAlign::TOP_CENTER, "%.0f%%", humidity);
               }
@@ -310,7 +306,7 @@ display:
 font:
   - file:
       type: gfonts
-      family: "M PLUS Rounded 1c"
+      family: "BIZ UDPGothic"
       weight: 300
     id: roboto16
     size: 16
@@ -322,10 +318,11 @@ font:
       - "TodayNext" # ラベル
       - "0123456789" # 数字
       - " /" # スラッシュと半角スペース
+      - "☂" # 傘マーク (U+2602)
 
   - file:
       type: gfonts
-      family: "M PLUS Rounded 1c"
+      family: "BIZ UDPGothic"
       weight: 400
     id: roboto20
     size: 20
@@ -339,7 +336,7 @@ font:
 
   - file:
       type: gfonts
-      family: "M PLUS Rounded 1c"
+      family: "BIZ UDPGothic"
       weight: 300
     id: roboto12
     size: 12
@@ -348,10 +345,12 @@ font:
       - "%"
       - "/"
       - "℃"
+      - "☂" # 傘マーク (U+2602)
+      - "日月火水木金土" # 曜日漢字
 
   - file:
       type: gfonts
-      family: "M PLUS Rounded 1c"
+      family: "BIZ UDPGothic"
       weight: 300
     id: roboto14
     size: 14
@@ -360,6 +359,7 @@ font:
       - "%"
       - "/"
       - "℃"
+      - "☂" # 傘マーク (U+2602)
 
     #天気アイコンフォント
   - file: "https://github.com/erikflowers/weather-icons/raw/master/font/weathericons-regular-webfont.ttf"

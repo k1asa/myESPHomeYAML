@@ -203,6 +203,8 @@ font:
     glyphsets:
       - GF_Latin_Core
     glyphs:
+      - "%"
+      - "/"
       - "℃"
 
   - file:
@@ -211,9 +213,12 @@ font:
       weight: 300
     id: roboto12
     size: 12
+    glyphsets:
+      - GF_Latin_Core
     glyphs:
-      - "%" 
-      - "0123456789"
+      - "%"
+      - "/"
+      - "℃"
 
   - file:
       type: gfonts
@@ -221,9 +226,12 @@ font:
       weight: 300
     id: roboto14
     size: 14
+    glyphsets:
+      - GF_Latin_Core
     glyphs:
-      - "℃" 
-      - "0123456789"
+      - "%"
+      - "/"
+      - "℃"
 
 ###Global Variables
 globals:

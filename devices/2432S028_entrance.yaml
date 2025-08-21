@@ -101,7 +101,7 @@ display:
           else if (id(forecast_day0_condition).state == "windy") icon_code0 = 0xf050;
           else if (id(forecast_day0_condition).state == "windy-variant") icon_code0 = 0xf012;
           else if (id(forecast_day0_condition).state == "exceptional") icon_code0 = 0xf056;
-          it.print(left_x, 66 + 20, id(weathericon80), id(white), TextAlign::CENTER, utf8_from_code(icon_code0).c_str());
+          it.print(left_x, 66 + 40, id(weathericon80), id(white), TextAlign::BASELINE_CENTER, utf8_from_code(icon_code0).c_str());
           if (id(forecast_day0_condition_jp).has_state()) {
             it.print(left_x, 146, id(roboto16), id(white), TextAlign::TOP_CENTER, id(forecast_day0_condition_jp).state.c_str());
           }
@@ -127,7 +127,7 @@ display:
           else if (id(forecast_day1_condition).state == "windy") icon_code1 = 0xf050;
           else if (id(forecast_day1_condition).state == "windy-variant") icon_code1 = 0xf012;
           else if (id(forecast_day1_condition).state == "exceptional") icon_code1 = 0xf056;
-          it.print(right_x, 66 + 20, id(weathericon80), id(white), TextAlign::CENTER, utf8_from_code(icon_code1).c_str());
+          it.print(right_x, 66 + 40, id(weathericon80), id(white), TextAlign::BASELINE_CENTER, utf8_from_code(icon_code1).c_str());
 
           if (id(forecast_day1_condition_jp).has_state()) {
             it.print(right_x, 146, id(roboto16), id(white), TextAlign::TOP_CENTER, id(forecast_day1_condition_jp).state.c_str());
@@ -205,7 +205,7 @@ display:
             int row = pos / cols;
             int center_x = col * col_w2 + col_w2 / 2;
             int wlabel_y = margin + row * row_h2 + row * 6;
-            int icon_center_y = wlabel_y + 12 + 10 + 20;
+            int icon_bottom_y = wlabel_y + 12 + 10 + 40;
 
             text_sensor::TextSensor *cond_sensor = nullptr;
             text_sensor::TextSensor *condjp_sensor = nullptr;
@@ -231,15 +231,15 @@ display:
 
             int icon_code = get_weather_icon_code(cond_sensor);
             if (icon_code == -1) {
-              it.print(center_x, icon_center_y, id(roboto20), id(white), TextAlign::CENTER, "?");
+              it.print(center_x, icon_center_y - 10, id(roboto20), id(white), TextAlign::BASELINE_CENTER, "?");
             } else {
               char icon_utf8b[5] = {0};
               utf8_from_code_local(icon_code, icon_utf8b, sizeof(icon_utf8b));
-              it.print(center_x, icon_center_y, id(weathericon40), id(white), TextAlign::CENTER, icon_utf8b);
+              it.print(center_x, icon_bottom_y , id(weathericon40), id(white), TextAlign::BASELINE_CENTER, icon_utf8b);
             }
 
-            it.printf(center_x, icon_center_y + 30, id(roboto14), id(white), TextAlign::TOP_CENTER, "%.0f/%.0f℃", temp_max, temp_min);
-            it.printf(center_x, icon_center_y + 50, id(roboto12), id(white), TextAlign::TOP_CENTER, "☂ %.0f%%", humidity);
+            it.printf(center_x, icon_center_y + 10, id(roboto14), id(white), TextAlign::TOP_CENTER, "%.0f/%.0f℃", temp_max, temp_min);
+            it.printf(center_x, icon_center_y + 30, id(roboto12), id(white), TextAlign::TOP_CENTER, "☂ %.0f%%", humidity);
           }
 
           // 左端に縦書きで 'Back'

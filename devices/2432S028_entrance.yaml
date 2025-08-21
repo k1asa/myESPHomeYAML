@@ -39,35 +39,12 @@ color:
     blue: 0%
 
 ###Displays
-###縦置き横置きなどはrotationを変更
 display:
   - <<: !include ../common/2432s028_display.yaml
     rotation: 0
     pages:
       - id: page1
         lambda: |-
-          auto draw_weather_icon = [&](auto &it, int x, int y, text_sensor::TextSensor *condition_sensor) {
-            if (!condition_sensor->has_state()) {
-              it.print(x + 40, y + 40, id(roboto20), id(white), TextAlign::CENTER, "?");
-              return;
-            }
-            std::string condition = condition_sensor->state;
-            if (condition == "sunny") { it.image(x, y, id(weather_sunny)); }
-            else if (condition == "clear-night") { it.image(x, y, id(weather_clear_night)); }
-            else if (condition == "cloudy") { it.image(x, y, id(weather_cloudy)); }
-            else if (condition == "partlycloudy") { it.image(x, y, id(weather_partlycloudy)); }
-            else if (condition == "rainy") { it.image(x, y, id(weather_rainy)); }
-            else if (condition == "pouring") { it.image(x, y, id(weather_pouring)); }
-            else if (condition == "lightning-rainy") { it.image(x, y, id(weather_lightning_rainy)); }
-            else if (condition == "snowy") { it.image(x, y, id(weather_snowy)); }
-            else if (condition == "snowy-rainy") { it.image(x, y, id(weather_snowy_rainy)); }
-            else if (condition == "windy" || condition == "windy-variant") { it.image(x, y, id(weather_windy_variant)); }
-            else if (condition == "fog") { it.image(x, y, id(weather_fog)); }
-            else if (condition == "hail") { it.image(x, y, id(weather_hail)); }
-            else if (condition == "lightning") { it.image(x, y, id(weather_lightning)); }
-            else { it.image(x, y, id(weather_cloudy)); }
-          };
-
           it.rectangle(0, 0, 320, 240, id(blue));
           it.print(it.get_width() / 2, 100, id(roboto20), id(white), TextAlign::BOTTOM_CENTER, "Hello World!");
           it.printf(it.get_width() / 2, 140, id(roboto20), id(green), TextAlign::TOP_CENTER, "Touch X: %.0f", id(touch_x_val));
@@ -334,304 +311,170 @@ interval:
       # main_displayの次のページを表示します (最後まで行ったら自動で先頭に戻ります)
       - display.page.show_next: main_display
 
-# Sensorの共通テンプレート定義
-.sensor_common: &sensor_common
-  platform: homeassistant
-  entity_id: sensor.daily_forecast_data
-  attribute: forecast_data
-
-###Sensors
+###Sensors（Home Assistantから取得した予報データをESPhomeで利用する）
 sensor:
-  # day0
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[0].precip_prob"
-    unit_of_measurement: "%"
-    id: forecast_day0_precip_prob
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[0].temp_max"
-    unit_of_measurement: "°C"
+  # Day0
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_0_temp_max
     id: forecast_day0_temp_max
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[0].temp_min"
-    unit_of_measurement: "°C"
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_0_temp_min
     id: forecast_day0_temp_min
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[0].humidity"
-    unit_of_measurement: "%"
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_0_humidity
     id: forecast_day0_humidity
-  # day1
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[1].precip_prob"
-    unit_of_measurement: "%"
-    id: forecast_day1_precip_prob
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[1].temp_max"
-    unit_of_measurement: "°C"
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_0_precip_prob
+    id: forecast_day0_precip_prob
+  # Day1
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_1_temp_max
     id: forecast_day1_temp_max
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[1].temp_min"
-    unit_of_measurement: "°C"
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_1_temp_min
     id: forecast_day1_temp_min
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[1].humidity"
-    unit_of_measurement: "%"
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_1_humidity
     id: forecast_day1_humidity
-  # day2
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[2].precip_prob"
-    unit_of_measurement: "%"
-    id: forecast_day2_precip_prob
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[2].temp_max"
-    unit_of_measurement: "°C"
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_1_precip_prob
+    id: forecast_day1_precip_prob
+  # Day2
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_2_temp_max
     id: forecast_day2_temp_max
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[2].temp_min"
-    unit_of_measurement: "°C"
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_2_temp_min
     id: forecast_day2_temp_min
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[2].humidity"
-    unit_of_measurement: "%"
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_2_humidity
     id: forecast_day2_humidity
-  # day3
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[3].precip_prob"
-    unit_of_measurement: "%"
-    id: forecast_day3_precip_prob
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[3].temp_max"
-    unit_of_measurement: "°C"
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_2_precip_prob
+    id: forecast_day2_precip_prob
+  # Day3
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_3_temp_max
     id: forecast_day3_temp_max
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[3].temp_min"
-    unit_of_measurement: "°C"
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_3_temp_min
     id: forecast_day3_temp_min
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[3].humidity"
-    unit_of_measurement: "%"
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_3_humidity
     id: forecast_day3_humidity
-  # day4
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[4].precip_prob"
-    unit_of_measurement: "%"
-    id: forecast_day4_precip_prob
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[4].temp_max"
-    unit_of_measurement: "°C"
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_3_precip_prob
+    id: forecast_day3_precip_prob
+  # Day4
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_4_temp_max
     id: forecast_day4_temp_max
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[4].temp_min"
-    unit_of_measurement: "°C"
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_4_temp_min
     id: forecast_day4_temp_min
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[4].humidity"
-    unit_of_measurement: "%"
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_4_humidity
     id: forecast_day4_humidity
-  # day5
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[5].precip_prob"
-    unit_of_measurement: "%"
-    id: forecast_day5_precip_prob
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[5].temp_max"
-    unit_of_measurement: "°C"
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_4_precip_prob
+    id: forecast_day4_precip_prob
+  # Day5
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_5_temp_max
     id: forecast_day5_temp_max
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[5].temp_min"
-    unit_of_measurement: "°C"
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_5_temp_min
     id: forecast_day5_temp_min
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[5].humidity"
-    unit_of_measurement: "%"
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_5_humidity
     id: forecast_day5_humidity
-  # day6
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[6].precip_prob"
-    unit_of_measurement: "%"
-    id: forecast_day6_precip_prob
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[6].temp_max"
-    unit_of_measurement: "°C"
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_5_precip_prob
+    id: forecast_day5_precip_prob
+  # Day6
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_6_temp_max
     id: forecast_day6_temp_max
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[6].temp_min"
-    unit_of_measurement: "°C"
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_6_temp_min
     id: forecast_day6_temp_min
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[6].humidity"
-    unit_of_measurement: "%"
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_6_humidity
     id: forecast_day6_humidity
-  # day7
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[7].precip_prob"
-    unit_of_measurement: "%"
-    id: forecast_day7_precip_prob
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[7].temp_max"
-    unit_of_measurement: "°C"
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_6_precip_prob
+    id: forecast_day6_precip_prob
+  # Day7
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_7_temp_max
     id: forecast_day7_temp_max
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[7].temp_min"
-    unit_of_measurement: "°C"
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_7_temp_min
     id: forecast_day7_temp_min
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[7].humidity"
-    unit_of_measurement: "%"
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_7_humidity
     id: forecast_day7_humidity
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_7_precip_prob
+    id: forecast_day7_precip_prob
 
-###Text Sensor
+###Text Sensor（天候名など文字列のデータ）
 text_sensor:
-  # day0
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[0].condition"
+  # Day0
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_0_condition
     id: forecast_day0_condition
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[0].condition_jp"
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_0_condition_jp
     id: forecast_day0_condition_jp
-  # day1
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[1].condition"
+  # Day1
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_1_condition
     id: forecast_day1_condition
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[1].condition_jp"
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_1_condition_jp
     id: forecast_day1_condition_jp
-  # day2
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[2].condition"
+  # Day2
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_2_condition
     id: forecast_day2_condition
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[2].condition_jp"
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_2_condition_jp
     id: forecast_day2_condition_jp
-  # day3
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[3].condition"
+  # Day3
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_3_condition
     id: forecast_day3_condition
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[3].condition_jp"
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_3_condition_jp
     id: forecast_day3_condition_jp
-  # day4
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[4].condition"
+  # Day4
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_4_condition
     id: forecast_day4_condition
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[4].condition_jp"
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_4_condition_jp
     id: forecast_day4_condition_jp
-  # day5
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[5].condition"
+  # Day5
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_5_condition
     id: forecast_day5_condition
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[5].condition_jp"
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_5_condition_jp
     id: forecast_day5_condition_jp
-  # day6
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[6].condition"
+  # Day6
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_6_condition
     id: forecast_day6_condition
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[6].condition_jp"
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_6_condition_jp
     id: forecast_day6_condition_jp
-  # day7
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[7].condition"
+  # Day7
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_7_condition
     id: forecast_day7_condition
-  - <<: *sensor_common
-    filters:
-      - json:
-          path: "$[7].condition_jp"
+  - platform: homeassistant
+    entity_id: sensor.forecast_day_7_condition_jp
     id: forecast_day7_condition_jp
 
 ###Touch Screens

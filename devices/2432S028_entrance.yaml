@@ -53,7 +53,7 @@ display:
           
       - id: page2
         lambda: |-
-          ###day0 今日
+          //day0 今日
           it.line(160, 20, 160, 220, id(white));
           it.print(80, 15, id(roboto16), id(white), TextAlign::TOP_CENTER, "Today");
 
@@ -82,7 +82,7 @@ display:
           it.printf(80, 150, id(roboto20), id(white), TextAlign::TOP_CENTER, "%.0f / %.0f ℃", id(forecast_day0_temp_max).state, id(forecast_day0_temp_min).state);
           it.printf(80, 185, id(roboto16), id(white), TextAlign::TOP_CENTER, "降水確率%.0f%%", id(forecast_day0_precip_prob).state);
 
-          ###day1 明日
+          //day1 明日
           it.print(240, 15, id(roboto16), id(white), TextAlign::TOP_CENTER, "Next");
 
           int icon_code1 = 0xf013; // default: cloudy

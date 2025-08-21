@@ -43,13 +43,13 @@ display:
   - <<: !include ../common/2432s028_display.yaml
     rotation: 0
     pages:
-      - id: page1
-        lambda: |-
-          it.rectangle(0, 0, 320, 240, id(blue));
-          it.print(it.get_width() / 2, 100, id(roboto20), id(white), TextAlign::BOTTOM_CENTER, "Hello World!");
-          it.printf(it.get_width() / 2, 140, id(roboto20), id(green), TextAlign::TOP_CENTER, "Touch X: %.0f", id(touch_x_val));
-          it.printf(it.get_width() / 2, 160, id(roboto20), id(red), TextAlign::TOP_CENTER, "Touch Y: %.0f", id(touch_y_val));
-          it.filled_circle(id(touch_x_val), id(touch_y_val), 10, id(yellow));
+      # - id: page1
+      #   lambda: |-
+      #     it.rectangle(0, 0, 320, 240, id(blue));
+      #     it.print(it.get_width() / 2, 100, id(roboto20), id(white), TextAlign::BOTTOM_CENTER, "Hello World!");
+      #     it.printf(it.get_width() / 2, 140, id(roboto20), id(green), TextAlign::TOP_CENTER, "Touch X: %.0f", id(touch_x_val));
+      #     it.printf(it.get_width() / 2, 160, id(roboto20), id(red), TextAlign::TOP_CENTER, "Touch Y: %.0f", id(touch_y_val));
+      #     it.filled_circle(id(touch_x_val), id(touch_y_val), 10, id(yellow));
           
       - id: page2
         lambda: |-
@@ -134,6 +134,20 @@ display:
           }
           it.printf(right_x, 178, id(roboto20), id(white), TextAlign::TOP_CENTER, "%.0f / %.0f ℃", id(forecast_day1_temp_max).state, id(forecast_day1_temp_min).state);
           it.printf(right_x, 214, id(roboto16), id(white), TextAlign::TOP_CENTER, "☂ %.0f%%", id(forecast_day1_precip_prob).state);
+
+          // 右端に縦書きで 'Weekly' を表示（下端を基準）
+          {
+            std::string v = "Weekly";
+            int sw = it.get_width();
+            int sh = it.get_height();
+            int x = sw - 6; // 右端からのマージン
+            int char_h = 12; // 1文字の垂直スペース（roboto12 想定）
+            int y_base = sh - 6; // 下端基準
+            for (int i = 0; i < (int)v.length(); i++) {
+              char buf[2] = { v[v.length() - 1 - i], '\0' };
+              it.print(x, y_base - i * char_h, id(roboto12), id(white), TextAlign::CENTER, buf);
+            }
+          }
 
       - id: page3
         lambda: |-
@@ -302,6 +316,19 @@ display:
             }
           }
 
+          // 左端に縦書きで 'Back' を表示（下端を基準）
+          {
+            std::string v = "Back";
+            int sh = it.get_height();
+            int x = 6; // 左端からのマージン
+            int char_h = 12; // 1文字の垂直スペース（roboto12 想定）
+            int y_base = sh - 6; // 下端基準
+            for (int i = 0; i < (int)v.length(); i++) {
+              char buf[2] = { v[v.length() - 1 - i], '\0' };
+              it.print(x, y_base - i * char_h, id(roboto12), id(white), TextAlign::CENTER, buf);
+            }
+          }
+
 ###Fonts
 font:
   - file:
@@ -416,12 +443,6 @@ globals:
     restore_value: no
     initial_value: '0.0'
 
-###Interval
-interval:
-  - interval: 5s # 5秒間隔で実行
-    then:
-      # main_displayの次のページを表示します (最後まで行ったら自動で先頭に戻ります)
-      - display.page.show_next: main_display
 
 ###Sensors（Home Assistantから取得した予報データをESPhomeで利用する）
 sensor:
@@ -597,6 +618,15 @@ touchscreen:
         id(touch_x_val) = touch.x;
         id(touch_y_val) = touch.y;
         ESP_LOGI("cal", "x=%d, y=%d, x_raw=%d, y_raw=%0d", touch.x, touch.y, touch.x_raw, touch.y_raw);
+        // 画面の左右1/3をタッチしたらページ切替
+        int w = id(main_display).get_width();
+        if (touch.x > (w * 2 / 3)) {
+          // 右1/3 → page3
+          id(main_display).show_page(id(page3));
+        } else if (touch.x < (w / 3)) {
+          // 左1/3 → page2
+          id(main_display).show_page(id(page2));
+        }
     on_release:
       lambda: |-
         []() {

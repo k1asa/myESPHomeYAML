@@ -377,7 +377,7 @@ font:
       - "℃"
       - "☂" # 傘マーク (U+2602)
       - "日月火水木金土" # 曜日漢字
-      - "weeklyback"
+      - "weklybac"
 
   - file:
       type: gfonts

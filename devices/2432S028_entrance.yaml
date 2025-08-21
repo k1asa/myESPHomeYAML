@@ -53,11 +53,43 @@ display:
           
       - id: page2
         lambda: |-
-          //day0 今日
-          it.line(160, 20, 160, 220, id(white));
-          it.print(80, 15, id(roboto16), id(white), TextAlign::TOP_CENTER, "Today");
+          // 共通: ヘルパーと座標計算
+          // ページ全体で共通に使う処理は先にまとめます。
+          auto utf8_from_code = [](int cp) -> std::string {
+            std::string s;
+            if (cp <= 0x7F) {
+              s.push_back((char)cp);
+            } else if (cp <= 0x7FF) {
+              s.push_back(0xC0 | ((cp >> 6) & 0x1F));
+              s.push_back(0x80 | (cp & 0x3F));
+            } else if (cp <= 0xFFFF) {
+              s.push_back(0xE0 | ((cp >> 12) & 0x0F));
+              s.push_back(0x80 | ((cp >> 6) & 0x3F));
+              s.push_back(0x80 | (cp & 0x3F));
+            } else {
+              s.push_back(0xF0 | ((cp >> 18) & 0x07));
+              s.push_back(0x80 | ((cp >> 12) & 0x3F));
+              s.push_back(0x80 | ((cp >> 6) & 0x3F));
+              s.push_back(0x80 | (cp & 0x3F));
+            }
+            return s;
+          };
+          const int screen_w = it.get_width();
+          const int left_x = screen_w / 4;
+          const int right_x = screen_w * 3 / 4;
+          const int cond_y = 120;
+          const int precip_y = 185;
+          const int center_y = (cond_y + precip_y) / 2;
+          const int icon_h = 80; // weathericon80 size
+          const int icon_y = center_y - icon_h / 2;
 
-          // 天気conditionからglyphコードを決定
+          // 画面中央に縦に線を引く
+          it.line(160, 20, 160, 220, id(white));
+
+          //day0 今日
+          it.print(left_x, 15, id(roboto16), id(white), TextAlign::TOP_CENTER, "Today");
+
+          // 天気conditionからglyphコードを決定し、天気アイコンを表示
           int icon_code0 = 0xf013; // default: cloudy
           if (id(forecast_day0_condition).state == "sunny") icon_code0 = 0xf00d;
           else if (id(forecast_day0_condition).state == "clear-night") icon_code0 = 0xf02e;
@@ -74,37 +106,16 @@ display:
           else if (id(forecast_day0_condition).state == "windy") icon_code0 = 0xf050;
           else if (id(forecast_day0_condition).state == "windy-variant") icon_code0 = 0xf012;
           else if (id(forecast_day0_condition).state == "exceptional") icon_code0 = 0xf056;
-          // icon_code0 is a Unicode codepoint; encode to UTF-8 and print to avoid %c garbling
-          {
-            char icon_utf8[5] = {0};
-            int cp = icon_code0;
-            if (cp <= 0x7F) {
-              icon_utf8[0] = cp;
-            } else if (cp <= 0x7FF) {
-              icon_utf8[0] = 0xC0 | ((cp >> 6) & 0x1F);
-              icon_utf8[1] = 0x80 | (cp & 0x3F);
-            } else if (cp <= 0xFFFF) {
-              icon_utf8[0] = 0xE0 | ((cp >> 12) & 0x0F);
-              icon_utf8[1] = 0x80 | ((cp >> 6) & 0x3F);
-              icon_utf8[2] = 0x80 | (cp & 0x3F);
-            } else {
-              icon_utf8[0] = 0xF0 | ((cp >> 18) & 0x07);
-              icon_utf8[1] = 0x80 | ((cp >> 12) & 0x3F);
-              icon_utf8[2] = 0x80 | ((cp >> 6) & 0x3F);
-              icon_utf8[3] = 0x80 | (cp & 0x3F);
-            }
-            it.print(40, 40, id(weathericon80), id(white), TextAlign::TOP_CENTER, icon_utf8);
-          }
-
+          it.print(left_x, icon_y, id(weathericon80), id(white), TextAlign::TOP_CENTER, utf8_from_code(icon_code0).c_str());
           if (id(forecast_day0_condition_jp).has_state()) {
-            it.print(80, 120, id(roboto16), id(white), TextAlign::TOP_CENTER, id(forecast_day0_condition_jp).state.c_str());
+            it.print(left_x, 120, id(roboto16), id(white), TextAlign::TOP_CENTER, id(forecast_day0_condition_jp).state.c_str());
           }
-          it.printf(80, 150, id(roboto20), id(white), TextAlign::TOP_CENTER, "%.0f / %.0f ℃", id(forecast_day0_temp_max).state, id(forecast_day0_temp_min).state);
-          it.printf(80, 185, id(roboto16), id(white), TextAlign::TOP_CENTER, "降水確率%.0f%%", id(forecast_day0_precip_prob).state);
+          it.printf(left_x, 150, id(roboto20), id(white), TextAlign::TOP_CENTER, "%.0f / %.0f ℃", id(forecast_day0_temp_max).state, id(forecast_day0_temp_min).state);
+          it.printf(left_x, 185, id(roboto16), id(white), TextAlign::TOP_CENTER, "降水確率%.0f%%", id(forecast_day0_precip_prob).state);
 
+          // 明日ブロック
           //day1 明日
-          it.print(240, 15, id(roboto16), id(white), TextAlign::TOP_CENTER, "Next");
-
+          it.print(right_x, 15, id(roboto16), id(white), TextAlign::TOP_CENTER, "Next");
           int icon_code1 = 0xf013; // default: cloudy
           if (id(forecast_day1_condition).state == "sunny") icon_code1 = 0xf00d;
           else if (id(forecast_day1_condition).state == "clear-night") icon_code1 = 0xf02e;
@@ -121,33 +132,12 @@ display:
           else if (id(forecast_day1_condition).state == "windy") icon_code1 = 0xf050;
           else if (id(forecast_day1_condition).state == "windy-variant") icon_code1 = 0xf012;
           else if (id(forecast_day1_condition).state == "exceptional") icon_code1 = 0xf056;
-          // encode icon_code1 to UTF-8 and print
-          {
-            char icon_utf8[5] = {0};
-            int cp = icon_code1;
-            if (cp <= 0x7F) {
-              icon_utf8[0] = cp;
-            } else if (cp <= 0x7FF) {
-              icon_utf8[0] = 0xC0 | ((cp >> 6) & 0x1F);
-              icon_utf8[1] = 0x80 | (cp & 0x3F);
-            } else if (cp <= 0xFFFF) {
-              icon_utf8[0] = 0xE0 | ((cp >> 12) & 0x0F);
-              icon_utf8[1] = 0x80 | ((cp >> 6) & 0x3F);
-              icon_utf8[2] = 0x80 | (cp & 0x3F);
-            } else {
-              icon_utf8[0] = 0xF0 | ((cp >> 18) & 0x07);
-              icon_utf8[1] = 0x80 | ((cp >> 12) & 0x3F);
-              icon_utf8[2] = 0x80 | ((cp >> 6) & 0x3F);
-              icon_utf8[3] = 0x80 | (cp & 0x3F);
-            }
-            it.print(200, 40, id(weathericon80), id(white), TextAlign::TOP_CENTER, icon_utf8);
-          }
-
+          it.print(right_x, icon_y, id(weathericon80), id(white), TextAlign::TOP_CENTER, utf8_from_code(icon_code1).c_str());
           if (id(forecast_day1_condition_jp).has_state()) {
-            it.print(240, 120, id(roboto16), id(white), TextAlign::TOP_CENTER, id(forecast_day1_condition_jp).state.c_str());
+            it.print(right_x, 120, id(roboto16), id(white), TextAlign::TOP_CENTER, id(forecast_day1_condition_jp).state.c_str());
           }
-          it.printf(240, 150, id(roboto20), id(white), TextAlign::TOP_CENTER, "%.0f / %.0f ℃", id(forecast_day1_temp_max).state, id(forecast_day1_temp_min).state);
-          it.printf(240, 185, id(roboto16), id(white), TextAlign::TOP_CENTER, "降水確率%.0f%%", id(forecast_day1_precip_prob).state);
+          it.printf(right_x, 150, id(roboto20), id(white), TextAlign::TOP_CENTER, "%.0f / %.0f ℃", id(forecast_day1_temp_max).state, id(forecast_day1_temp_min).state);
+          it.printf(right_x, 185, id(roboto16), id(white), TextAlign::TOP_CENTER, "降水確率%.0f%%", id(forecast_day1_precip_prob).state);
 
       - id: page3
         lambda: |-
@@ -221,37 +211,99 @@ display:
                       break;
             }
 
-            // it.printfでweathericon40フォントを使って天気アイコン表示
-            int icon_code = get_weather_icon_code(cond_sensor);
-            if (icon_code == -1) {
-              it.print(center_x, icon_y + 40, id(roboto20), id(white), TextAlign::CENTER, "?");
-            } else {
-              // encode icon_code to UTF-8 and print (avoid %c garble)
-              {
-                char icon_utf8[5] = {0};
-                int cp = icon_code;
-                if (cp <= 0x7F) {
-                  icon_utf8[0] = cp;
-                } else if (cp <= 0x7FF) {
-                  icon_utf8[0] = 0xC0 | ((cp >> 6) & 0x1F);
-                  icon_utf8[1] = 0x80 | (cp & 0x3F);
-                } else if (cp <= 0xFFFF) {
-                  icon_utf8[0] = 0xE0 | ((cp >> 12) & 0x0F);
-                  icon_utf8[1] = 0x80 | ((cp >> 6) & 0x3F);
-                  icon_utf8[2] = 0x80 | (cp & 0x3F);
-                } else {
-                  icon_utf8[0] = 0xF0 | ((cp >> 18) & 0x07);
-                  icon_utf8[1] = 0x80 | ((cp >> 12) & 0x3F);
-                  icon_utf8[2] = 0x80 | ((cp >> 6) & 0x3F);
-                  icon_utf8[3] = 0x80 | (cp & 0x3F);
+            // Arrange 6 forecast items in 2 rows x 3 columns, and print weekday above each icon
+            {
+              const char* wdays[] = {"日","月","火","水","木","金","土"};
+              time_t now = time(nullptr);
+              const int cols = 3;
+              const int rows = 2;
+              const int items = 6; // forecast_day2..7
+              const int screen_w2 = it.get_width();
+              const int screen_h2 = it.get_height();
+              const int col_w2 = screen_w2 / cols;
+              const int top_margin = 10;
+              const int row_h2 = (screen_h2 - top_margin - 10) / rows;
+
+              for (int pos = 0; pos < items; pos++) {
+                int idx = pos + 2; // maps to day2..day7
+                int col = pos % cols;
+                int row = pos / cols;
+                int center_x = col * col_w2 + col_w2 / 2;
+                int icon_top_y = top_margin + row * row_h2 + 12;
+                int icon_center_y = icon_top_y + 20; // adjust for weathericon40
+
+                text_sensor::TextSensor *cond_sensor = nullptr;
+                float temp_max = 0, temp_min = 0, humidity = 0;
+                switch (idx) {
+                  case 2: cond_sensor = id(forecast_day2_condition);
+                          temp_max = id(forecast_day2_temp_max).state;
+                          temp_min = id(forecast_day2_temp_min).state;
+                          humidity = id(forecast_day2_humidity).state;
+                          break;
+                  case 3: cond_sensor = id(forecast_day3_condition);
+                          temp_max = id(forecast_day3_temp_max).state;
+                          temp_min = id(forecast_day3_temp_min).state;
+                          humidity = id(forecast_day3_humidity).state;
+                          break;
+                  case 4: cond_sensor = id(forecast_day4_condition);
+                          temp_max = id(forecast_day4_temp_max).state;
+                          temp_min = id(forecast_day4_temp_min).state;
+                          humidity = id(forecast_day4_humidity).state;
+                          break;
+                  case 5: cond_sensor = id(forecast_day5_condition);
+                          temp_max = id(forecast_day5_temp_max).state;
+                          temp_min = id(forecast_day5_temp_min).state;
+                          humidity = id(forecast_day5_humidity).state;
+                          break;
+                  case 6: cond_sensor = id(forecast_day6_condition);
+                          temp_max = id(forecast_day6_temp_max).state;
+                          temp_min = id(forecast_day6_temp_min).state;
+                          humidity = id(forecast_day6_humidity).state;
+                          break;
+                  case 7: cond_sensor = id(forecast_day7_condition);
+                          temp_max = id(forecast_day7_temp_max).state;
+                          temp_min = id(forecast_day7_temp_min).state;
+                          humidity = id(forecast_day7_humidity).state;
+                          break;
                 }
-                it.print(center_x, icon_y, id(weathericon40), id(white), TextAlign::TOP_CENTER, icon_utf8);
+
+                // compute weekday label for this forecast (offset = idx days from today)
+                time_t t2 = now + (idx) * 24 * 60 * 60;
+                struct tm *tm2 = localtime(&t2);
+                const char* wlabel = wdays[tm2->tm_wday];
+                // print weekday above icon
+                it.print(center_x, icon_top_y, id(roboto12), id(white), TextAlign::TOP_CENTER, wlabel);
+
+                // icon
+                int icon_code = get_weather_icon_code(cond_sensor);
+                if (icon_code == -1) {
+                  it.print(center_x, icon_center_y + 10, id(roboto20), id(white), TextAlign::CENTER, "?");
+                } else {
+                  char icon_utf8b[5] = {0};
+                  int cpb = icon_code;
+                  if (cpb <= 0x7F) {
+                    icon_utf8b[0] = cpb;
+                  } else if (cpb <= 0x7FF) {
+                    icon_utf8b[0] = 0xC0 | ((cpb >> 6) & 0x1F);
+                    icon_utf8b[1] = 0x80 | (cpb & 0x3F);
+                  } else if (cpb <= 0xFFFF) {
+                    icon_utf8b[0] = 0xE0 | ((cpb >> 12) & 0x0F);
+                    icon_utf8b[1] = 0x80 | ((cpb >> 6) & 0x3F);
+                    icon_utf8b[2] = 0x80 | (cpb & 0x3F);
+                  } else {
+                    icon_utf8b[0] = 0xF0 | ((cpb >> 18) & 0x07);
+                    icon_utf8b[1] = 0x80 | ((cpb >> 12) & 0x3F);
+                    icon_utf8b[2] = 0x80 | ((cpb >> 6) & 0x3F);
+                    icon_utf8b[3] = 0x80 | (cpb & 0x3F);
+                  }
+                  it.print(center_x, icon_center_y, id(weathericon40), id(white), TextAlign::TOP_CENTER, icon_utf8b);
+                }
+
+                // temperature and humidity under icon
+                it.printf(center_x, icon_center_y + 36, id(roboto14), id(white), TextAlign::TOP_CENTER, "%.0f/%.0f℃", temp_max, temp_min);
+                it.printf(center_x, icon_center_y + 56, id(roboto12), id(white), TextAlign::TOP_CENTER, "%.0f%%", humidity);
               }
             }
-
-            // 気温・湿度表示
-            it.printf(center_x, temp_y, id(roboto14), id(white), TextAlign::TOP_CENTER, "%.0f/%.0f℃", temp_max, temp_min);
-            it.printf(center_x, humid_y, id(roboto12), id(white), TextAlign::TOP_CENTER, "%.0f%%", humidity);
           }
 
 ###Fonts

@@ -307,7 +307,8 @@ font:
   - file:
       type: gfonts
       family: BIZ+UDPGothic
-      weight: 300
+      italic : false
+      weight: 400
     id: roboto16
     size: 16
     glyphsets:
@@ -337,7 +338,7 @@ font:
   - file:
       type: gfonts
       family: BIZ+UDPGothic
-      weight: 300
+      weight: 400
     id: roboto12
     size: 12
     glyphs:
@@ -351,7 +352,7 @@ font:
   - file:
       type: gfonts
       family: BIZ+UDPGothic
-      weight: 300
+      weight: 400
     id: roboto14
     size: 14
     glyphs:

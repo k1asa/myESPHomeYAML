@@ -322,7 +322,7 @@ font:
 
   - file:
       type: gfonts
-      family: "BIZ UDPGothic"
+      family: BIZ+UDPGothic
       weight: 400
     id: roboto20
     size: 20
@@ -336,7 +336,7 @@ font:
 
   - file:
       type: gfonts
-      family: "BIZ UDPGothic"
+      family: BIZ+UDPGothic
       weight: 300
     id: roboto12
     size: 12
@@ -350,7 +350,7 @@ font:
 
   - file:
       type: gfonts
-      family: "BIZ UDPGothic"
+      family: BIZ+UDPGothic
       weight: 300
     id: roboto14
     size: 14

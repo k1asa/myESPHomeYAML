@@ -74,7 +74,27 @@ display:
           else if (id(forecast_day0_condition).state == "windy") icon_code0 = 0xf050;
           else if (id(forecast_day0_condition).state == "windy-variant") icon_code0 = 0xf012;
           else if (id(forecast_day0_condition).state == "exceptional") icon_code0 = 0xf056;
-          it.printf(40, 40, id(weathericon80), id(white), TextAlign::TOP_CENTER, "%c", icon_code0);
+          // icon_code0 is a Unicode codepoint; encode to UTF-8 and print to avoid %c garbling
+          {
+            char icon_utf8[5] = {0};
+            int cp = icon_code0;
+            if (cp <= 0x7F) {
+              icon_utf8[0] = cp;
+            } else if (cp <= 0x7FF) {
+              icon_utf8[0] = 0xC0 | ((cp >> 6) & 0x1F);
+              icon_utf8[1] = 0x80 | (cp & 0x3F);
+            } else if (cp <= 0xFFFF) {
+              icon_utf8[0] = 0xE0 | ((cp >> 12) & 0x0F);
+              icon_utf8[1] = 0x80 | ((cp >> 6) & 0x3F);
+              icon_utf8[2] = 0x80 | (cp & 0x3F);
+            } else {
+              icon_utf8[0] = 0xF0 | ((cp >> 18) & 0x07);
+              icon_utf8[1] = 0x80 | ((cp >> 12) & 0x3F);
+              icon_utf8[2] = 0x80 | ((cp >> 6) & 0x3F);
+              icon_utf8[3] = 0x80 | (cp & 0x3F);
+            }
+            it.print(40, 40, id(weathericon80), id(white), TextAlign::TOP_CENTER, icon_utf8);
+          }
 
           if (id(forecast_day0_condition_jp).has_state()) {
             it.print(80, 120, id(roboto16), id(white), TextAlign::TOP_CENTER, id(forecast_day0_condition_jp).state.c_str());
@@ -101,7 +121,27 @@ display:
           else if (id(forecast_day1_condition).state == "windy") icon_code1 = 0xf050;
           else if (id(forecast_day1_condition).state == "windy-variant") icon_code1 = 0xf012;
           else if (id(forecast_day1_condition).state == "exceptional") icon_code1 = 0xf056;
-          it.printf(200, 40, id(weathericon80), id(white), TextAlign::TOP_CENTER, "%c", icon_code1);
+          // encode icon_code1 to UTF-8 and print
+          {
+            char icon_utf8[5] = {0};
+            int cp = icon_code1;
+            if (cp <= 0x7F) {
+              icon_utf8[0] = cp;
+            } else if (cp <= 0x7FF) {
+              icon_utf8[0] = 0xC0 | ((cp >> 6) & 0x1F);
+              icon_utf8[1] = 0x80 | (cp & 0x3F);
+            } else if (cp <= 0xFFFF) {
+              icon_utf8[0] = 0xE0 | ((cp >> 12) & 0x0F);
+              icon_utf8[1] = 0x80 | ((cp >> 6) & 0x3F);
+              icon_utf8[2] = 0x80 | (cp & 0x3F);
+            } else {
+              icon_utf8[0] = 0xF0 | ((cp >> 18) & 0x07);
+              icon_utf8[1] = 0x80 | ((cp >> 12) & 0x3F);
+              icon_utf8[2] = 0x80 | ((cp >> 6) & 0x3F);
+              icon_utf8[3] = 0x80 | (cp & 0x3F);
+            }
+            it.print(200, 40, id(weathericon80), id(white), TextAlign::TOP_CENTER, icon_utf8);
+          }
 
           if (id(forecast_day1_condition_jp).has_state()) {
             it.print(240, 120, id(roboto16), id(white), TextAlign::TOP_CENTER, id(forecast_day1_condition_jp).state.c_str());
@@ -186,7 +226,27 @@ display:
             if (icon_code == -1) {
               it.print(center_x, icon_y + 40, id(roboto20), id(white), TextAlign::CENTER, "?");
             } else {
-              it.printf(center_x, icon_y, id(weathericon40), id(white), TextAlign::TOP_CENTER, "%c", icon_code);
+              // encode icon_code to UTF-8 and print (avoid %c garble)
+              {
+                char icon_utf8[5] = {0};
+                int cp = icon_code;
+                if (cp <= 0x7F) {
+                  icon_utf8[0] = cp;
+                } else if (cp <= 0x7FF) {
+                  icon_utf8[0] = 0xC0 | ((cp >> 6) & 0x1F);
+                  icon_utf8[1] = 0x80 | (cp & 0x3F);
+                } else if (cp <= 0xFFFF) {
+                  icon_utf8[0] = 0xE0 | ((cp >> 12) & 0x0F);
+                  icon_utf8[1] = 0x80 | ((cp >> 6) & 0x3F);
+                  icon_utf8[2] = 0x80 | (cp & 0x3F);
+                } else {
+                  icon_utf8[0] = 0xF0 | ((cp >> 18) & 0x07);
+                  icon_utf8[1] = 0x80 | ((cp >> 12) & 0x3F);
+                  icon_utf8[2] = 0x80 | ((cp >> 6) & 0x3F);
+                  icon_utf8[3] = 0x80 | (cp & 0x3F);
+                }
+                it.print(center_x, icon_y, id(weathericon40), id(white), TextAlign::TOP_CENTER, icon_utf8);
+              }
             }
 
             // 気温・湿度表示
@@ -217,6 +277,8 @@ font:
       weight: 400
     id: roboto20
     size: 20
+    glyphsets:
+      - GF_Latin_Core
     glyphs:
       - "0123456789" # 数字
       - "%"

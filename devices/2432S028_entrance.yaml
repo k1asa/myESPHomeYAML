@@ -306,7 +306,7 @@ display:
 font:
   - file:
       type: gfonts
-      family: "BIZ UDPGothic"
+      family: BIZ+UDPGothic
       weight: 300
     id: roboto16
     size: 16

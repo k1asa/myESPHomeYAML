@@ -172,56 +172,13 @@ display:
             else return 0xf013; // default: cloudy
           };
 
-          const int count = 6;
           const int screen_w = it.get_width();
           const int screen_h = it.get_height();
-          const int col_w = screen_w / count;
-
           const int icon_y    = 20;
           const int temp_y    = 70;
           const int humid_y   = 100;
 
-          for (int idx = 2; idx < 8; idx++) {
-            int col = idx - 2;
-            int center_x = col * col_w + col_w / 2;
-
-            text_sensor::TextSensor *cond_sensor = nullptr;
-            float temp_max = 0, temp_min = 0, humidity = 0;
-
-            switch (idx) {
-              case 2: cond_sensor = id(forecast_day2_condition);
-                      temp_max = id(forecast_day2_temp_max).state;
-                      temp_min = id(forecast_day2_temp_min).state;
-                      humidity = id(forecast_day2_humidity).state;
-                      break;
-              case 3: cond_sensor = id(forecast_day3_condition);
-                      temp_max = id(forecast_day3_temp_max).state;
-                      temp_min = id(forecast_day3_temp_min).state;
-                      humidity = id(forecast_day3_humidity).state;
-                      break;
-              case 4: cond_sensor = id(forecast_day4_condition);
-                      temp_max = id(forecast_day4_temp_max).state;
-                      temp_min = id(forecast_day4_temp_min).state;
-                      humidity = id(forecast_day4_humidity).state;
-                      break;
-              case 5: cond_sensor = id(forecast_day5_condition);
-                      temp_max = id(forecast_day5_temp_max).state;
-                      temp_min = id(forecast_day5_temp_min).state;
-                      humidity = id(forecast_day5_humidity).state;
-                      break;
-              case 6: cond_sensor = id(forecast_day6_condition);
-                      temp_max = id(forecast_day6_temp_max).state;
-                      temp_min = id(forecast_day6_temp_min).state;
-                      humidity = id(forecast_day6_humidity).state;
-                      break;
-              case 7: cond_sensor = id(forecast_day7_condition);
-                      temp_max = id(forecast_day7_temp_max).state;
-                      temp_min = id(forecast_day7_temp_min).state;
-                      humidity = id(forecast_day7_humidity).state;
-                      break;
-            }
-
-            // 6日分の予報を2行3列で配置し、各アイコンの上に曜日を表示
+          // 6日分の予報を2行3列で配置し、各アイコンの上に曜日を表示
             {
               const char* wdays[] = {"日","月","火","水","木","金","土"}; // 曜日ラベル
               time_t now = time(nullptr); // 現在の時刻を取得
@@ -243,34 +200,41 @@ display:
                 int icon_center_y = wlabel_y + 12 + 10 + 20; // 天気アイコンや？の表示位置の中央を算出
 
                 text_sensor::TextSensor *cond_sensor = nullptr;
+                text_sensor::TextSensor *condjp_sensor = nullptr;
                 float temp_max = 0, temp_min = 0, humidity = 0;
                 switch (idx) {
                   case 2: cond_sensor = id(forecast_day2_condition);
+                          condjp_sensor = id(forecast_day2_condition_jp);
                           temp_max = id(forecast_day2_temp_max).state;
                           temp_min = id(forecast_day2_temp_min).state;
                           humidity = id(forecast_day2_humidity).state;
                           break;
                   case 3: cond_sensor = id(forecast_day3_condition);
+                          condjp_sensor = id(forecast_day3_condition_jp);
                           temp_max = id(forecast_day3_temp_max).state;
                           temp_min = id(forecast_day3_temp_min).state;
                           humidity = id(forecast_day3_humidity).state;
                           break;
                   case 4: cond_sensor = id(forecast_day4_condition);
+                          condjp_sensor = id(forecast_day4_condition_jp);
                           temp_max = id(forecast_day4_temp_max).state;
                           temp_min = id(forecast_day4_temp_min).state;
                           humidity = id(forecast_day4_humidity).state;
                           break;
                   case 5: cond_sensor = id(forecast_day5_condition);
+                          condjp_sensor = id(forecast_day5_condition_jp);
                           temp_max = id(forecast_day5_temp_max).state;
                           temp_min = id(forecast_day5_temp_min).state;
                           humidity = id(forecast_day5_humidity).state;
                           break;
                   case 6: cond_sensor = id(forecast_day6_condition);
+                          condjp_sensor = id(forecast_day6_condition_jp);
                           temp_max = id(forecast_day6_temp_max).state;
                           temp_min = id(forecast_day6_temp_min).state;
                           humidity = id(forecast_day6_humidity).state;
                           break;
                   case 7: cond_sensor = id(forecast_day7_condition);
+                          condjp_sensor = id(forecast_day7_condition_jp);
                           temp_max = id(forecast_day7_temp_max).state;
                           temp_min = id(forecast_day7_temp_min).state;
                           humidity = id(forecast_day7_humidity).state;
@@ -282,7 +246,11 @@ display:
                 struct tm *tm2 = localtime(&t2);
                 const char* wlabel = wdays[tm2->tm_wday];
                 // アイコン上に曜日ラベルを表示
-                it.print(center_x, wlabel_y, id(roboto12), id(white), TextAlign::TOP_CENTER, wlabel);
+                it.print(center_x - 45, wlabel_y, id(roboto12), id(white), TextAlign::TOP_CENTER, wlabel);
+
+                if (id(forecast_day1_condition_jp).has_state()) {
+                  it.print(center_x, wlabel_y, id(roboto12), id(white), TextAlign::TOP_RIGHT, condjp_sensor->state.c_str());
+                }
 
                 // アイコン表示
                 int icon_code = get_weather_icon_code(cond_sensor);
@@ -342,7 +310,7 @@ font:
       - GF_Latin_Core
     glyphs:
       - "%" # パーセント
-      - "快晴(夜)曇霧雹雷雨一全部豪雪みぞれ強風異常気象不明降水確率" # 日本語の天気名
+      - "快晴(夜)曇霧雹雷雨一全部豪雪みぞれ強風異常気象不明降水確率り" # 日本語の天気名
       - "TodayNext" # ラベル
       - "0123456789" # 数字
       - " /" # スラッシュと半角スペース
@@ -377,7 +345,8 @@ font:
       - "℃"
       - "☂" # 傘マーク (U+2602)
       - "日月火水木金土" # 曜日漢字
-      - "weklybac"
+      - "快晴(夜)曇霧雹雷雨一全部豪雪みぞれ強風異常気象不明降水確率り" # 日本語の天気名
+      - "WeklyBac"
 
   - file:
       type: gfonts

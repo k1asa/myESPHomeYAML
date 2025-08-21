@@ -231,15 +231,15 @@ display:
 
             int icon_code = get_weather_icon_code(cond_sensor);
             if (icon_code == -1) {
-              it.print(center_x, icon_center_y - 10, id(roboto20), id(white), TextAlign::BASELINE_CENTER, "?");
+              it.print(center_x, icon_bottom_y - 10, id(roboto20), id(white), TextAlign::BASELINE_CENTER, "?");
             } else {
               char icon_utf8b[5] = {0};
               utf8_from_code_local(icon_code, icon_utf8b, sizeof(icon_utf8b));
               it.print(center_x, icon_bottom_y , id(weathericon40), id(white), TextAlign::BASELINE_CENTER, icon_utf8b);
             }
 
-            it.printf(center_x, icon_center_y + 10, id(roboto14), id(white), TextAlign::TOP_CENTER, "%.0f/%.0f℃", temp_max, temp_min);
-            it.printf(center_x, icon_center_y + 30, id(roboto12), id(white), TextAlign::TOP_CENTER, "☂ %.0f%%", humidity);
+            it.printf(center_x, icon_bottom_y + 10, id(roboto14), id(white), TextAlign::TOP_CENTER, "%.0f/%.0f℃", temp_max, temp_min);
+            it.printf(center_x, icon_bottom_y + 30, id(roboto12), id(white), TextAlign::TOP_CENTER, "☂ %.0f%%", humidity);
           }
 
           // 左端に縦書きで 'Back'

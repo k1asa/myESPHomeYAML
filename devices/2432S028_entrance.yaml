@@ -217,9 +217,8 @@ font:
       weight: 400
     id: roboto20
     size: 20
-    glyphsets:
-      - GF_Latin_Core
     glyphs:
+      - "0123456789" # 数字
       - "%"
       - "/"
       - "℃"
@@ -230,9 +229,8 @@ font:
       weight: 300
     id: roboto12
     size: 12
-    glyphsets:
-      - GF_Latin_Core
     glyphs:
+      - "0123456789" # 数字
       - "%"
       - "/"
       - "℃"
@@ -243,9 +241,8 @@ font:
       weight: 300
     id: roboto14
     size: 14
-    glyphsets:
-      - GF_Latin_Core
     glyphs:
+      - "0123456789" # 数字
       - "%"
       - "/"
       - "℃"

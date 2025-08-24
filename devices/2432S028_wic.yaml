@@ -10,7 +10,7 @@ esphome:
   friendly_name: ${friendly_name}
 
 #####Custom#####
-<<: !include ../devices/2432s028_entrance.yaml
+<<: !include ./2432s028_entrance.yaml
 
 display:
   rotation: 0

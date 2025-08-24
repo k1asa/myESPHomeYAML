@@ -209,14 +209,14 @@ display:
 
             text_sensor::TextSensor *cond_sensor = nullptr;
             text_sensor::TextSensor *condjp_sensor = nullptr;
-            float temp_max = 0, temp_min = 0, pripro = 0;
+            float temp_max = 0, temp_min = 0, precip_prob = 0;
             switch (idx) {
-              case 2: cond_sensor = id(forecast_day2_condition); condjp_sensor = id(forecast_day2_condition_jp); temp_max = id(forecast_day2_temp_max).state; temp_min = id(forecast_day2_temp_min).state; pripro = id(forecast_day2_pripro).state; break;
-              case 3: cond_sensor = id(forecast_day3_condition); condjp_sensor = id(forecast_day3_condition_jp); temp_max = id(forecast_day3_temp_max).state; temp_min = id(forecast_day3_temp_min).state; pripro = id(forecast_day3_pripro).state; break;
-              case 4: cond_sensor = id(forecast_day4_condition); condjp_sensor = id(forecast_day4_condition_jp); temp_max = id(forecast_day4_temp_max).state; temp_min = id(forecast_day4_temp_min).state; pripro = id(forecast_day4_pripro).state; break;
-              case 5: cond_sensor = id(forecast_day5_condition); condjp_sensor = id(forecast_day5_condition_jp); temp_max = id(forecast_day5_temp_max).state; temp_min = id(forecast_day5_temp_min).state; pripro = id(forecast_day5_pripro).state; break;
-              case 6: cond_sensor = id(forecast_day6_condition); condjp_sensor = id(forecast_day6_condition_jp); temp_max = id(forecast_day6_temp_max).state; temp_min = id(forecast_day6_temp_min).state; pripro = id(forecast_day6_pripro).state; break;
-              case 7: cond_sensor = id(forecast_day7_condition); condjp_sensor = id(forecast_day7_condition_jp); temp_max = id(forecast_day7_temp_max).state; temp_min = id(forecast_day7_temp_min).state; pripro = id(forecast_day7_pripro).state; break;
+              case 2: cond_sensor = id(forecast_day2_condition); condjp_sensor = id(forecast_day2_condition_jp); temp_max = id(forecast_day2_temp_max).state; temp_min = id(forecast_day2_temp_min).state; precip_prob = id(forecast_day2_precip_prob).state; break;
+              case 3: cond_sensor = id(forecast_day3_condition); condjp_sensor = id(forecast_day3_condition_jp); temp_max = id(forecast_day3_temp_max).state; temp_min = id(forecast_day3_temp_min).state; precip_prob = id(forecast_day3_precip_prob).state; break;
+              case 4: cond_sensor = id(forecast_day4_condition); condjp_sensor = id(forecast_day4_condition_jp); temp_max = id(forecast_day4_temp_max).state; temp_min = id(forecast_day4_temp_min).state; precip_prob = id(forecast_day4_precip_prob).state; break;
+              case 5: cond_sensor = id(forecast_day5_condition); condjp_sensor = id(forecast_day5_condition_jp); temp_max = id(forecast_day5_temp_max).state; temp_min = id(forecast_day5_temp_min).state; precip_prob = id(forecast_day5_precip_prob).state; break;
+              case 6: cond_sensor = id(forecast_day6_condition); condjp_sensor = id(forecast_day6_condition_jp); temp_max = id(forecast_day6_temp_max).state; temp_min = id(forecast_day6_temp_min).state; precip_prob = id(forecast_day6_precip_prob).state; break;
+              case 7: cond_sensor = id(forecast_day7_condition); condjp_sensor = id(forecast_day7_condition_jp); temp_max = id(forecast_day7_temp_max).state; temp_min = id(forecast_day7_temp_min).state; precip_prob = id(forecast_day7_precip_prob).state; break;
               default: break;
             }
 
@@ -239,7 +239,7 @@ display:
             }
 
             it.printf(center_x, icon_bottom_y + 10, id(roboto14), id(white), TextAlign::TOP_CENTER, "%.0f/%.0f℃", temp_max, temp_min);
-            it.printf(center_x, icon_bottom_y + 30, id(roboto12), id(ha_blue), TextAlign::TOP_CENTER, "☂%.0f%%", pripro);
+            it.printf(center_x, icon_bottom_y + 30, id(roboto12), id(ha_blue), TextAlign::TOP_CENTER, "☂%.0f%%", precip_prob);
           }☂
 
           // 左端に縦書きで 'Back'

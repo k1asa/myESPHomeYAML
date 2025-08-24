@@ -1,0 +1,22 @@
+#####Substitutions#####
+substitutions:
+  name: esphome-web-73df2c
+  friendly_name: ESPHome 2432S028 73df2c 玄関
+###############
+
+#####Basic#####
+esphome:
+  name: ${name}
+  friendly_name: ${friendly_name}
+
+#####Custom#####
+<<: !include ../devices/2432s028_entrance.yaml
+
+display:
+  rotation: 0
+
+touchscreen:
+    transform:
+      swap_xy: true
+      mirror_x: true
+      mirror_y: true

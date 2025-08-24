@@ -239,8 +239,8 @@ display:
             }
 
             it.printf(center_x, icon_bottom_y + 10, id(roboto14), id(white), TextAlign::TOP_CENTER, "%.0f/%.0f℃", temp_max, temp_min);
-            it.printf(center_x, icon_bottom_y + 30, id(roboto12), id(ha_blue), TextAlign::TOP_CENTER, "☂ %.0f%%", precip_prob);
-          }☂
+            it.printf(center_x, icon_bottom_y + 30, id(roboto12), id(ha_blue), TextAlign::TOP_CENTER, "☂%.0f%%", precip_prob);
+          }
 
           // 左端に縦書きで 'Back'
           {

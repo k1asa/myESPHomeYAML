@@ -101,12 +101,12 @@ display:
           else if (id(forecast_day0_condition).state == "windy") icon_code0 = 0xf050;
           else if (id(forecast_day0_condition).state == "windy-variant") icon_code0 = 0xf012;
           else if (id(forecast_day0_condition).state == "exceptional") icon_code0 = 0xf056;
-          it.print(left_x, 66 + 40, id(weathericon80), id(white), TextAlign::BASELINE_CENTER, utf8_from_code(icon_code0).c_str());
+          it.print(left_x, 68 + 40, id(weathericon80), id(white), TextAlign::BASELINE_CENTER, utf8_from_code(icon_code0).c_str());
           if (id(forecast_day0_condition_jp).has_state()) {
-            it.print(left_x, 146, id(roboto16), id(white), TextAlign::TOP_CENTER, id(forecast_day0_condition_jp).state.c_str());
+            it.print(left_x, 152, id(roboto16), id(white), TextAlign::TOP_CENTER, id(forecast_day0_condition_jp).state.c_str());
           }
-          it.printf(left_x, 178, id(roboto20), id(white), TextAlign::TOP_CENTER, "%.0f / %.0f ℃", id(forecast_day0_temp_max).state, id(forecast_day0_temp_min).state);
-          it.printf(left_x, 214, id(roboto16), id(ha_blue), TextAlign::TOP_CENTER, "☂ %.0f%%", id(forecast_day0_precip_prob).state);
+          it.printf(left_x, 182, id(roboto20), id(white), TextAlign::TOP_CENTER, "%.0f / %.0f ℃", id(forecast_day0_temp_max).state, id(forecast_day0_temp_min).state);
+          it.printf(left_x, 218, id(roboto16), id(ha_blue), TextAlign::TOP_CENTER, "☂ %.0f%%", id(forecast_day0_precip_prob).state);
 
           //day1 明日
           it.print(right_x, 10, id(roboto16), id(white), TextAlign::TOP_CENTER, "Next");
@@ -127,13 +127,13 @@ display:
           else if (id(forecast_day1_condition).state == "windy") icon_code1 = 0xf050;
           else if (id(forecast_day1_condition).state == "windy-variant") icon_code1 = 0xf012;
           else if (id(forecast_day1_condition).state == "exceptional") icon_code1 = 0xf056;
-          it.print(right_x, 66 + 40, id(weathericon80), id(white), TextAlign::BASELINE_CENTER, utf8_from_code(icon_code1).c_str());
+          it.print(right_x, 67 + 40, id(weathericon80), id(white), TextAlign::BASELINE_CENTER, utf8_from_code(icon_code1).c_str());
 
           if (id(forecast_day1_condition_jp).has_state()) {
-            it.print(right_x, 146, id(roboto16), id(white), TextAlign::TOP_CENTER, id(forecast_day1_condition_jp).state.c_str());
+            it.print(right_x, 148, id(roboto16), id(white), TextAlign::TOP_CENTER, id(forecast_day1_condition_jp).state.c_str());
           }
-          it.printf(right_x, 178, id(roboto20), id(white), TextAlign::TOP_CENTER, "%.0f / %.0f ℃", id(forecast_day1_temp_max).state, id(forecast_day1_temp_min).state);
-          it.printf(right_x, 214, id(roboto16), id(ha_blue), TextAlign::TOP_CENTER, "☂ %.0f%%", id(forecast_day1_precip_prob).state);
+          it.printf(right_x, 180, id(roboto20), id(white), TextAlign::TOP_CENTER, "%.0f / %.0f ℃", id(forecast_day1_temp_max).state, id(forecast_day1_temp_min).state);
+          it.printf(right_x, 216, id(roboto16), id(ha_blue), TextAlign::TOP_CENTER, "☂ %.0f%%", id(forecast_day1_precip_prob).state);
 
           // 右端に縦書きで 'Weekly' を表示（下端を基準）
           {
@@ -541,6 +541,9 @@ text_sensor:
 ###Touch Screens
 touchscreen:
   - <<: !include ../common/2432s028_touch.yaml
+    transform:
+      mirror_x: false
+      mirror_y: false
     on_touch:
       lambda: |-
         id(touch_x_val) = touch.x;
@@ -549,11 +552,11 @@ touchscreen:
         // 画面の左右1/3をタッチしたらページ切替
         int w = id(main_display).get_width();
         if (touch.x > (w * 2 / 3)) {
-          // 右1/3 → page2
-          id(main_display).show_page(id(page2));
-        } else if (touch.x < (w / 3)) {
-          // 左1/3 → page3
+          // 右1/3 → page3
           id(main_display).show_page(id(page3));
+        } else if (touch.x < (w / 3)) {
+          // 左1/3 → page2
+          id(main_display).show_page(id(page2));
         }
     on_release:
       lambda: |-

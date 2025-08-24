@@ -127,7 +127,7 @@ display:
           else if (id(forecast_day1_condition).state == "windy") icon_code1 = 0xf050;
           else if (id(forecast_day1_condition).state == "windy-variant") icon_code1 = 0xf012;
           else if (id(forecast_day1_condition).state == "exceptional") icon_code1 = 0xf056;
-          it.print(right_x, 68 + 20, id(weathericon80), id(white), TextAlign::BASELINE_CENTER, utf8_from_code(icon_code1).c_str());
+          it.print(right_x, 68 + 40, id(weathericon80), id(white), TextAlign::BASELINE_CENTER, utf8_from_code(icon_code1).c_str());
 
           if (id(forecast_day1_condition_jp).has_state()) {
             it.print(right_x, 152, id(roboto16), id(white), TextAlign::TOP_CENTER, id(forecast_day1_condition_jp).state.c_str());

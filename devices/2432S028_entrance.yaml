@@ -549,11 +549,11 @@ touchscreen:
         // 画面の左右1/3をタッチしたらページ切替
         int w = id(main_display).get_width();
         if (touch.x > (w * 2 / 3)) {
-          // 右1/3 → page3
-          id(main_display).show_page(id(page3));
-        } else if (touch.x < (w / 3)) {
-          // 左1/3 → page2
+          // 右1/3 → page2
           id(main_display).show_page(id(page2));
+        } else if (touch.x < (w / 3)) {
+          // 左1/3 → page3
+          id(main_display).show_page(id(page3));
         }
     on_release:
       lambda: |-

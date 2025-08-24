@@ -542,6 +542,7 @@ text_sensor:
 touchscreen:
   - <<: !include ../common/2432s028_touch.yaml
     transform:
+      swap_xy: true
       mirror_x: false
       mirror_y: false
     on_touch:

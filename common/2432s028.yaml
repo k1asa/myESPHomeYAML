@@ -49,8 +49,9 @@ light:
 
 sensor:
   - platform: adc
+    id: brightness_adc
     pin: 34
-    name: "Brightness"
+    name: Brightness
     update_interval: 15s
 
 ###各GPIOの提議

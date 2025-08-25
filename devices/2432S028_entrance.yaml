@@ -362,7 +362,6 @@ globals:
     restore_value: no
     initial_value: '0.0'
 
-
 ###Sensors（Home Assistantから取得した予報データをESPhomeで利用する）
 sensor:
   # Day0

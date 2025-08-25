@@ -34,7 +34,7 @@ light:
     platform: monochromatic
     output: hw_backlight_pwm
     name: Display Backlight
-    restore_mode: ALWAYS_ON
+    restore_mode: ALWAYS_OFF
   - platform: rgb
     name: RGB
     id: hw_led
@@ -106,3 +106,9 @@ touchscreen:
       swap_xy: true
       mirror_x: true
       mirror_y: true
+    on_touch:
+      lambda: |-
+        id(backlight).turn_on();
+        auto call = id(backlight).turn_off();
+        call.set_delay(5 * 60 * 1000); // 5分後にOFF
+        call.perform();

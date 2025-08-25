@@ -47,6 +47,12 @@ light:
     blue: led_blue
     restore_mode: ALWAYS_OFF
 
+sensor:
+  - platform: adc
+    pin: 34
+    name: "Brightness"
+    update_interval: 15s
+
 ###各GPIOの提議
 output:
   - id: backlight_pwm

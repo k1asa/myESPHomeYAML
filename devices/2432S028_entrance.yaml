@@ -565,3 +565,9 @@ touchscreen:
         };
 
 ###############
+
+interval:
+  - interval: 10s
+    then:
+      - lambda: |-
+          ESP_LOGI("adc", "brightness_adc=%f", id(brightness_adc).state);

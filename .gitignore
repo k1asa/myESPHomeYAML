@@ -1,4 +1,5 @@
 # ESPHome キャッシュ／ビルド成果物
+.esphome
 .esphome/build/
 .esphome/packages/
 .esphome-web-73df2c.yaml

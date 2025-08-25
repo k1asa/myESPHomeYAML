@@ -1,5 +1,13 @@
+#####Substitutions#####
+substitutions:
+  name: esphome-web-2432s028
+  friendly_name: ESPHome 2432S028 
+###############
+
+#####Basic#####
 esphome:
-  min_version: 2025.5.0
+  name: ${name}
+  friendly_name: ${friendly_name}
   name_add_mac_suffix: false
 
 esp32:
@@ -7,27 +15,15 @@ esp32:
   framework:
     type: arduino
 
-# Enable logging
-logger:
-# Enable Home Assistant API
-api:
-# Allow Over-The-Air updates
-ota:
-  - platform: esphome
-    password: !secret ota_password
-
-web_server:
-    port: 80
-
 ###タッチスクリーンとディスプレイのSPIピン設定
 spi:
-  - id: tft
+  - id: hw_tft
     clk_pin: GPIO14
     mosi_pin: GPIO13
     miso_pin:
       number: 12
       ignore_strapping_warning: true
-  - id: touch
+  - id: hw_touch
     clk_pin: GPIO25
     mosi_pin: GPIO32
     miso_pin: GPIO39
@@ -36,38 +32,77 @@ spi:
 light:
   - id: backlight
     platform: monochromatic
-    output: backlight_pwm
+    output: hw_backlight_pwm
     name: Display Backlight
     restore_mode: ALWAYS_ON
   - platform: rgb
     name: RGB
-    id: led
-    red: led_red
-    green: led_green
-    blue: led_blue
+    id: hw_led
+    red: hw_led_red
+    green: hw_led_green
+    blue: hw_led_blue
     restore_mode: ALWAYS_OFF
 
 sensor:
   - platform: adc
-    id: brightness_adc
+    id: hw_brightness_adc
     pin: GPIO34
     name: Brightness
-    update_interval: 15s
+    update_interval: 60s
 
 ###各GPIOの提議
 output:
-  - id: backlight_pwm
+  - id: hw_backlight_pwm
     platform: ledc
     pin: GPIO21
   - platform: ledc
     pin: GPIO4
-    id: led_red
+    id: hw_led_red
     inverted: true
   - platform: ledc
     pin: GPIO16
-    id: led_green
+    id: hw_led_green
     inverted: true
   - platform: ledc
     pin: GPIO17
-    id: led_blue
+    id: hw_led_blue
     inverted: true
+
+###Displays
+display:
+  - platform: ili9xxx
+    id: hw_main_display
+    model: ILI9341
+    update_interval: 50ms
+    color_palette: 8BIT
+    spi_id: hw_tft
+    color_order: rgb
+    invert_colors: false
+    cs_pin:
+      number: 15
+      ignore_strapping_warning: true
+    dc_pin:
+      number:  2
+      ignore_strapping_warning: true
+    dimensions:
+      height: 240
+      width: 320
+
+###Touch Screens
+touchscreen:
+  - platform: xpt2046
+    id: hw_main_touch
+    spi_id: hw_touch
+    cs_pin: GPIO33
+    interrupt_pin: GPIO36
+    update_interval: 50ms
+    threshold: 600
+    calibration:
+      x_min: 280
+      x_max: 3860
+      y_min: 340
+      y_max: 3860
+    transform:
+      swap_xy: true
+      mirror_x: true
+      mirror_y: true

@@ -1,19 +1,7 @@
-#####Substitutions#####
-substitutions:
-  name: esphome-web-73df2c
-  friendly_name: ESPHome 2432S028 73df2c 玄関
-###############
-
-#####Basic#####
-esphome:
-  name: ${name}
-  friendly_name: ${friendly_name}
-
-# 共通WiFi設定
-<<: !include ../common/wifi.yaml
-
-#####Custom#####
-<<: !include ../common/2432s028.yaml
+#----- Device: 2432S028 玄関 -----
+packages:
+  - !include ../common/common_base.yaml
+  - !include ../common/2432s028.yaml
 
 ###Colors
 color:
@@ -40,7 +28,7 @@ color:
 
 ###Displays
 display:
-  - <<: !include ../common/2432s028_display.yaml
+  - id: !extend hw_main_display
     rotation: 180
     pages:
       # - id: page1
@@ -540,7 +528,7 @@ text_sensor:
 
 ###Touch Screens
 touchscreen:
-  - <<: !include ../common/2432s028_touch.yaml
+  - id: !extend hw_main_touch
     transform:
       swap_xy: true
       mirror_x: false
@@ -551,23 +539,16 @@ touchscreen:
         id(touch_y_val) = touch.y;
         ESP_LOGI("cal", "x=%d, y=%d, x_raw=%d, y_raw=%0d", touch.x, touch.y, touch.x_raw, touch.y_raw);
         // 画面の左右1/3をタッチしたらページ切替
-        int w = id(main_display).get_width();
+        int w = id(hw_main_display).get_width();
         if (touch.x > (w * 2 / 3)) {
           // 右1/3 → page3
-          id(main_display).show_page(id(page3));
+          id(hw_main_display).show_page(id(page3));
         } else if (touch.x < (w / 3)) {
           // 左1/3 → page2
-          id(main_display).show_page(id(page2));
+          id(hw_main_display).show_page(id(page2));
         }
     on_release:
       lambda: |-
         []() {
         };
 
-###############
-
-interval:
-  - interval: 10s
-    then:
-      - lambda: |-
-          ESP_LOGI("adc", "brightness_adc=%f", id(brightness_adc).state);

@@ -1,21 +1,21 @@
+#----- Device: 2432S028 WIC -----
+
 #####Substitutions#####
 substitutions:
   name: esphome-web-7682a8
   friendly_name: ESPHome 2432S028 7682a8 WIC
 ###############
 
-#####Basic#####
-esphome:
-  name: ${name}
-  friendly_name: ${friendly_name}
-
 #####Custom#####
-<<: !include ./2432S028_entrance.yaml
+packages: 
+  - !include ./2432S028_entrance.yaml
 
 display:
-  rotation: 0
+  - id: !extend hw_main_display
+    rotation: 0
 
 touchscreen:
+  - id: !extend hw_main_touch
     transform:
       swap_xy: true
       mirror_x: true

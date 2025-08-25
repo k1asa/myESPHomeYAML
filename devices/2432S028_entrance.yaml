@@ -89,7 +89,7 @@ display:
           else if (id(forecast_day0_condition).state == "windy") icon_code0 = 0xf050;
           else if (id(forecast_day0_condition).state == "windy-variant") icon_code0 = 0xf012;
           else if (id(forecast_day0_condition).state == "exceptional") icon_code0 = 0xf056;
-          it.print(left_x, 68 + 20, id(weathericon80), id(white), TextAlign::CENTER, utf8_from_code(icon_code0).c_str());
+          it.print(left_x, 68 + 40, id(weathericon80), id(white), TextAlign::BASELINE_CENTER, utf8_from_code(icon_code0).c_str());
           if (id(forecast_day0_condition_jp).has_state()) {
             it.print(left_x, 152, id(roboto16), id(white), TextAlign::TOP_CENTER, id(forecast_day0_condition_jp).state.c_str());
           }
@@ -212,6 +212,9 @@ display:
             struct tm tm2 = *localtime(&t2);
             const char* wlabel = wdays[tm2.tm_wday];
 
+          // 画面中央に横に線を引く
+          it.line(20, 120, 300, 120, id(white));
+
             it.print(center_x - 40, wlabel_y, id(roboto12), id(white), TextAlign::TOP_LEFT, wlabel);
             if (condjp_sensor && condjp_sensor->has_state()) {
               it.print(center_x + 40, wlabel_y, id(roboto12), id(white), TextAlign::TOP_RIGHT, condjp_sensor->state.c_str());
@@ -219,15 +222,15 @@ display:
 
             int icon_code = get_weather_icon_code(cond_sensor);
             if (icon_code == -1) {
-              it.print(center_x, icon_bottom_y - 10, id(roboto20), id(white), TextAlign::BASELINE_CENTER, "?");
+              it.print(center_x, icon_bottom_y - 12, id(roboto20), id(white), TextAlign::BASELINE_CENTER, "?");
             } else {
               char icon_utf8b[5] = {0};
               utf8_from_code_local(icon_code, icon_utf8b, sizeof(icon_utf8b));
               it.print(center_x, icon_bottom_y , id(weathericon40), id(white), TextAlign::BASELINE_CENTER, icon_utf8b);
             }
 
-            it.printf(center_x, icon_bottom_y + 10, id(roboto14), id(white), TextAlign::TOP_CENTER, "%.0f/%.0f℃", temp_max, temp_min);
-            it.printf(center_x, icon_bottom_y + 30, id(roboto12), id(ha_blue), TextAlign::TOP_CENTER, "☂%.0f%%", precip_prob);
+            it.printf(center_x, icon_bottom_y + 15, id(roboto14), id(white), TextAlign::TOP_CENTER, "%.0f/%.0f℃", temp_max, temp_min);
+            it.printf(center_x, icon_bottom_y + 35, id(roboto12), id(ha_blue), TextAlign::TOP_CENTER, "☂%.0f%%", precip_prob);
           }
 
           // 左端に縦書きで 'Back'

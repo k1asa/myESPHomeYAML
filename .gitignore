@@ -1,8 +1,7 @@
 # ESPHome キャッシュ／ビルド成果物
 .esphome
-.esphome/build/
-.esphome/packages/
-.esphome-web-73df2c.yaml
+esphome-web-7682a8.yaml
+esphome-web-73df2c.yaml
 
 # センシティブな情報
 secrets.yaml

@@ -362,6 +362,21 @@ globals:
     restore_value: no
     initial_value: '0.0'
 
+### Script
+script:
+  ### touchで呼び出すと再起動されるタイマーでバックライトを消す
+  - id: backlight_onoff_timer
+    mode: restart
+    then:
+      - light.turn_on: 
+          id: hw_backlight
+          brightness: 100%
+          transition_length: 0s
+      - delay: 2min
+      - light.turn_off: 
+          id: hw_backlight
+          transition_length: 1s
+
 ###Sensors（Home Assistantから取得した予報データをESPhomeで利用する）
 sensor:
   # Day0
@@ -536,29 +551,21 @@ touchscreen:
       mirror_x: false
       mirror_y: false
     on_touch:
-      lambda: |-
-        // タッチ座標を保存
-        id(touch_x_val) = touch.x;
-        id(touch_y_val) = touch.y;
-        ESP_LOGI("cal", "x=%d, y=%d, x_raw=%d, y_raw=%d", touch.x, touch.y, touch.x_raw, touch.y_raw);
-        
-        // 画面の左右1/3をタッチしたらページ切替
-        int w = id(hw_main_display).get_width();
-        if (touch.x > (w * 2 / 3)) {
-          // 右1/3 → page3
-          id(hw_main_display).show_page(id(page3));
-        } else if (touch.x < (w / 3)) {
-          // 左1/3 → page2
-          id(hw_main_display).show_page(id(page2));
-        }
+      then:
+        - script.execute: backlight_onoff_timer
+        - lambda: |-
+            // タッチ座標を保存
+            id(touch_x_val) = touch.x;
+            id(touch_y_val) = touch.y;
+            ESP_LOGI("cal", "x=%d, y=%d, x_raw=%d, y_raw=%d", touch.x, touch.y, touch.x_raw, touch.y_raw);
+            
+            // 画面の左右1/3をタッチしたらページ切替
+            int w = id(hw_main_display).get_width();
+            if (touch.x > (w * 2 / 3)) {
+              // 右1/3 → page3
+              id(hw_main_display).show_page(id(page3));
+            } else if (touch.x < (w / 3)) {
+              // 左1/3 → page2
+              id(hw_main_display).show_page(id(page2));
+            }
 
-        // タッチ時にバックライトをONにする
-        id(ha_backlight).turn_on();
-        auto call = id(ha_backlight).turn_off();
-        call.set_delay(5 * 60 * 1000); // 5分後にOFF
-        call.perform();
-
-    on_release:
-      lambda: |-
-        []() {
-        };

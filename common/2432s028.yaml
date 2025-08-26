@@ -106,9 +106,3 @@ touchscreen:
       swap_xy: true
       mirror_x: true
       mirror_y: true
-    on_touch:
-      lambda: |-
-        id(ha_backlight).turn_on();
-        auto call = id(ha_backlight).turn_off();
-        call.set_delay(5 * 60 * 1000); // 5分後にOFF
-        call.perform();

@@ -601,6 +601,11 @@ time:
   - platform: sntp
     id: sntp_time
     timezone: Asia/Tokyo
+    # 任意のNTPサーバー（上から順に試行）。
+    servers:
+      - ntp.nict.jp
+      - 0.pool.ntp.org
+      - 1.pool.ntp.org
     on_time:
       # 7:00 になったら傘判定して必要ならスクリプト開始
       - seconds: 0

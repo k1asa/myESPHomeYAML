@@ -185,7 +185,7 @@ display:
           const int row_h2 = (screen_h2 - margin - margin) / rows;
 
           const char* wdays[] = {"日","月","火","水","木","金","土"};
-          time_t now = time(nullptr);
+          time_t now = ::time(nullptr);
 
           for (int pos = 0; pos < items; pos++) {
             int idx = pos + 2;
@@ -209,7 +209,7 @@ display:
             }
 
             time_t t2 = now + (idx) * 24 * 60 * 60;
-            struct tm tm2 = *localtime(&t2);
+            struct tm tm2 = *::localtime(&t2);
             const char* wlabel = wdays[tm2.tm_wday];
 
           // 画面中央に横に線を引く
@@ -373,12 +373,12 @@ script:
   - id: backlight_onoff_timer
     mode: restart
     then:
-      - light.turn_on: 
+      - light.turn_on:
           id: hw_backlight
           brightness: 100%
           transition_length: 0s
       - delay: 2min
-      - light.turn_off: 
+      - light.turn_off:
           id: hw_backlight
           transition_length: 1s
   # 傘が必要な日の 7:00～8:00 に青く 1 秒フェードイン/1 秒フェードアウトを繰り返す
@@ -394,7 +394,7 @@ script:
             - light.turn_on:
                 id: hw_led
                 red: 0%
-                green: 0%
+                green: 80%
                 blue: 100%
                 brightness: 100%
                 transition_length: 1s
@@ -621,7 +621,7 @@ time:
               }
               if (id(forecast_day0_condition).has_state()) {
                 auto c = id(forecast_day0_condition).state;
-                if (c == "rainy" || c == "pouring" || c == "lightning-rainy" || c == "snowy" || c == "snowy-rainy") {
+                if (c == "rainy" || c == "pouring" || c == "lightning" || c == "lightning-rainy" || c == "snowy" || c == "snowy-rainy") {
                   need = true;
                 }
               }

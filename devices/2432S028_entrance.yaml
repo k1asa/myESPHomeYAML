@@ -361,6 +361,11 @@ globals:
     type: float
     restore_value: no
     initial_value: '0.0'
+  # 7:00～8:00 の傘アラート LED 実行フラグ
+  - id: umbrella_led_running
+    type: bool
+    restore_value: no
+    initial_value: 'false'
 
 ### Script
 script:
@@ -376,6 +381,28 @@ script:
       - light.turn_off: 
           id: hw_backlight
           transition_length: 1s
+  # 傘が必要な日の 7:00～8:00 に青く 1 秒フェードイン/1 秒フェードアウトを繰り返す
+  - id: umbrella_led_breathe
+    mode: restart
+    then:
+      - lambda: |-
+          id(umbrella_led_running) = true;
+      - while:
+          condition:
+            lambda: 'return id(umbrella_led_running);'
+          then:
+            - light.turn_on:
+                id: hw_led
+                red: 0%
+                green: 0%
+                blue: 100%
+                brightness: 100%
+                transition_length: 1s
+            - delay: 1s
+            - light.turn_off:
+                id: hw_led
+                transition_length: 1s
+            - delay: 1s
 
 ###Sensors（Home Assistantから取得した予報データをESPhomeで利用する）
 sensor:
@@ -568,4 +595,67 @@ touchscreen:
               // 左1/3 → page2
               id(hw_main_display).show_page(id(page2));
             }
+
+### Time (傘アラート用)
+time:
+  - platform: sntp
+    id: sntp_time
+    timezone: Asia/Tokyo
+    on_time:
+      # 7:00 になったら傘判定して必要ならスクリプト開始
+      - seconds: 0
+        minutes: 0
+        hours: 7
+        then:
+          - lambda: |-
+              bool need = false;
+              // 降水確率しきい値 (例: 40%)
+              const float THRESH = 40.0f;
+              if (id(forecast_day0_precip_prob).has_state() && id(forecast_day0_precip_prob).state >= THRESH) {
+                need = true;
+              }
+              if (id(forecast_day0_condition).has_state()) {
+                auto c = id(forecast_day0_condition).state;
+                if (c == "rainy" || c == "pouring" || c == "lightning-rainy" || c == "snowy" || c == "snowy-rainy") {
+                  need = true;
+                }
+              }
+              if (need) {
+                ESP_LOGI("umbrella", "傘が必要 → LED ブリーズ開始");
+                id(umbrella_led_running) = true;
+                id(umbrella_led_breathe).execute();
+              } else {
+                ESP_LOGI("umbrella", "傘不要");
+              }
+      # 8:00 で停止
+      - seconds: 0
+        minutes: 0
+        hours: 8
+        then:
+          - lambda: |-
+              if (id(umbrella_led_running)) {
+                ESP_LOGI("umbrella", "8:00 到達 → LED ブリーズ停止");
+              }
+              id(umbrella_led_running) = false;
+          - light.turn_off: hw_led
+      # 7:00～8:00 の間に再起動した場合の救済: 7:00～7:59 の毎分チェック
+      - seconds: 0
+        minutes: /1
+        hours: 7
+        then:
+          - lambda: |-
+              if (!id(umbrella_led_running)) {
+                bool need = false;
+                const float THRESH = 40.0f;
+                if (id(forecast_day0_precip_prob).has_state() && id(forecast_day0_precip_prob).state >= THRESH) need = true;
+                if (id(forecast_day0_condition).has_state()) {
+                  auto c = id(forecast_day0_condition).state;
+                  if (c == "rainy" || c == "pouring" || c == "lightning-rainy" || c == "snowy" || c == "snowy-rainy") need = true;
+                }
+                if (need) {
+                  ESP_LOGI("umbrella", "再起動後/フォールバック判定 → ブリーズ開始");
+                  id(umbrella_led_running) = true;
+                  id(umbrella_led_breathe).execute();
+                }
+              }
 

@@ -17,21 +17,21 @@ color:
     red: 100%
     green: 100%
     blue: 100%
-  - id: black
-    red: 0%
-    green: 0%
-    blue: 0%
   - id: yellow
     red: 100%
     green: 100%
     blue: 0%
+  - id: glay
+    red: 50%
+    green: 50%
+    blue: 50%
 
 ###Displays
 display:
   - id: !extend hw_main_display
     rotation: 180
     pages:
-      # - id: page1
+      # - id: page1 # タッチ位置をログと画面に出力するテストページ。一応残しておく。
       #   lambda: |-
       #     it.rectangle(0, 0, 320, 240, id(blue));
       #     it.print(it.get_width() / 2, 100, id(roboto20), id(white), TextAlign::BOTTOM_CENTER, "Hello World!");
@@ -183,10 +183,40 @@ display:
           const int col_w2 = screen_w2 / cols;
           const int margin = 5;
           const int row_h2 = (screen_h2 - margin - margin) / rows;
+          int quarter_x = (int)floorf(col_w2 * 0.25f); // 25% (端数切り下げ)
+          int quarter_y = (int)floorf(row_h2 * 0.25f); // 25% (端数切り下げ)
+          if (quarter_x < 1) quarter_x = 1; // 極端に細かい分割でも可視化
+          if (quarter_y < 1) quarter_y = 1;
+
 
           const char* wdays[] = {"日","月","火","水","木","金","土"};
           time_t now = ::time(nullptr);
 
+          // --- グリッド区切り線（各セル境界 25%～75% ） ---
+          // 水平境界線 (行と行の間) r = 1 .. rows-1
+          for (int r = 1; r < rows; ++r) {
+            int y = margin + r * row_h2; // 行境界のY
+            for (int c = 0; c < cols; ++c) {
+              int x1 = c * col_w2 + quarter_x;
+              int x2 = (c + 1) * col_w2 - quarter_x;
+              if (x2 > x1) {
+                it.line(x1, y, x2, y, id(glay));
+              }
+            }
+          }
+          // 垂直境界線 (列と列の間) c = 1 .. cols-1
+            for (int c = 1; c < cols; ++c) {
+              int x = c * col_w2; // 列境界のX
+              for (int r = 0; r < rows; ++r) {
+                int y1 = margin + r * row_h2 + quarter_y;
+                int y2 = margin + (r + 1) * row_h2 - quarter_y;
+                if (y2 > y1) {
+                  it.line(x, y1, x, y2, id(glay));
+                }
+              }
+            }
+
+          // 予報アイテム描画ループ
           for (int pos = 0; pos < items; pos++) {
             int idx = pos + 2;
             int col = pos % cols;
@@ -211,9 +241,7 @@ display:
             time_t t2 = now + (idx) * 24 * 60 * 60;
             struct tm tm2 = *::localtime(&t2);
             const char* wlabel = wdays[tm2.tm_wday];
-
-          // 画面中央に横に線を引く
-          it.line(20, 120, 300, 120, id(white));
+            
 
             it.print(center_x - 40, wlabel_y, id(roboto12), id(white), TextAlign::TOP_LEFT, wlabel);
             if (condjp_sensor && condjp_sensor->has_state()) {

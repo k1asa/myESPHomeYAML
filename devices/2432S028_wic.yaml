@@ -12,10 +12,10 @@ packages:
 
 display:
   - id: !extend hw_main_display
-    rotation: 0
+    rotation: 0 #玄関デバイスと異なり、Type-Cコネクタを左側に位置させるため180度回転させた。
 
 touchscreen:
-  - id: !extend hw_main_touch
+  - id: !extend hw_main_touch #タッチも同様に液晶と同じく180度回転
     transform:
       swap_xy: true
       mirror_x: true

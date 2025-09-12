@@ -26,6 +26,10 @@ color:
     green: 50%
     blue: 50%
 
+###Debug
+debug:
+  update_interval: 10s
+
 ###Displays
 display:
   - id: !extend hw_main_display
@@ -538,6 +542,9 @@ sensor:
   - platform: homeassistant
     entity_id: sensor.forecast_day_7_precip_prob
     id: forecast_day7_precip_prob
+  - platform: uptime #稼働時間
+    name: "Uptime"
+    id: uptime_sensor
 
 ###Text Sensor（天候名など文字列のデータ）
 text_sensor:
@@ -597,6 +604,11 @@ text_sensor:
   - platform: homeassistant
     entity_id: sensor.forecast_day_7_condition_jp
     id: forecast_day7_condition_jp
+  # debug情報
+  - platform: debug
+    reset_reason:
+      name: "Reset Reason"
+      id: reset_reason
 
 ###Touch Screens
 touchscreen:

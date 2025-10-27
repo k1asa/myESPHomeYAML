@@ -17,7 +17,7 @@ YAML構成を二手三手試しては戻す状況が多く、バージョン管�
 <img width="320" height="240" alt="esp_weekly" src="https://github.com/user-attachments/assets/aff45f86-e821-41d4-bb11-06153caabc30" />
 
 
-## 2432S028_entrance.yaml
+## 2432S028_wic.yaml
 上記の天気表示をWICにも設置したくて作成
 基本的に上記の玄関設置のyamlを引用している。
 設置位置の関係からデバイスを180度回転させて設置しているので設定値を上書き。
